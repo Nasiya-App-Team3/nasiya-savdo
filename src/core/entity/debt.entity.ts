@@ -19,7 +19,10 @@ export class Debt extends BaseModel {
   @Column()
   description: string;
 
-  @ManyToOne(() => Debtor, (debtor) => debtor.debts, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Debtor, (debtor) => debtor.debts, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   debtor: Debtor;
 
   @OneToMany(() => Payments, (payments) => payments.debt)

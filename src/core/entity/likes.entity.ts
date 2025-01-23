@@ -5,9 +5,15 @@ import { BaseModel } from 'src/common/database';
 
 @Entity({ name: 'likes' })
 export class Likes extends BaseModel {
-  @ManyToOne(() => Store, (store) => store.likes, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Store, (store) => store.likes, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   store: Store;
 
-  @OneToOne(() => Debtor, (debtor) => debtor.like, { onDelete: 'CASCADE' })
+  @OneToOne(() => Debtor, (debtor) => debtor.like, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   debtor: Debtor;
 }

@@ -9,6 +9,7 @@ export class PhoneNumbersOfDebtors extends BaseModel {
 
   @ManyToOne(() => Debtor, (debtor) => debtor.phone_numbers, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   debtor: Debtor;
 }
