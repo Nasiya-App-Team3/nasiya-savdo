@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../config/index';
 import { StoreModule } from './store/store.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { StoreModule } from './store/store.module';
       entities: ['dist/core/entity/*.entity{.ts,.js}'],
     }),
     StoreModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

@@ -73,6 +73,11 @@ export class StoreService {
     return findOneStore;
   }
 
+  async findByLogin(login: string): Promise<Store> {
+    const store = await this.repository.findOne({ where: { login } });
+    return store;
+  }
+
   async update(id: string, updateStoreDto: UpdateStoresDto): Promise<Store> {
     await this.findOne(id);
     await this.repository.update(id, updateStoreDto);

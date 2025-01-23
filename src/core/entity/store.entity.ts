@@ -19,7 +19,7 @@ export class Store extends BaseModel {
   @Column()
   pin_code: number;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: true })
   is_active: boolean;
 
   @OneToMany(() => Debtor, (debtor) => debtor.store)
