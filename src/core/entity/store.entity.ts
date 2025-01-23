@@ -16,6 +16,9 @@ export class Store extends BaseModel {
   @Column()
   image: string;
 
+  @Column()
+  pin_code: number;
+
   @Column({ type: 'boolean', default: false })
   is_active: boolean;
 
