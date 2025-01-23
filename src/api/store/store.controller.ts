@@ -30,7 +30,10 @@ export class StoreController {
     return this.storesService.findOne(id);
   }
   @Put(':id')
-  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateStoreDto: UpdateStoresDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateStoreDto: UpdateStoresDto,
+  ) {
     return this.storesService.update(id, updateStoreDto);
   }
   @Delete(':id')
