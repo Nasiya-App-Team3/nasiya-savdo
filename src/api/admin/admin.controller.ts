@@ -1,9 +1,16 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+} from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { Admin } from '../../core/entity/admin.entity';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateAdminDto, UpdateAdminDto } from './dto/index.js';
-
 
 @ApiTags('Admins')
 @Controller('admins')
@@ -37,7 +44,10 @@ export class AdminController {
   @ApiResponse({ status: 200, description: 'The admin successfully updated!' })
   @ApiResponse({ status: 404, description: 'Admin is not found' })
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateData: UpdateAdminDto): Promise<Admin> {
+  update(
+    @Param('id') id: string,
+    @Body() updateData: UpdateAdminDto,
+  ): Promise<Admin> {
     return this.adminService.update(id, updateData);
   }
 
