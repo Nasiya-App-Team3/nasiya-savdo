@@ -1,6 +1,9 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 import { BaseModel } from '../../common/database/index';
 import { Debtor } from './debtor.entity';
+import { SampleMessages } from './sample.message.entity';
+import { Messages } from './message.entity';
+import { Likes } from './likes.entity';
 
 @Entity({ name: 'stores' })
 export class Store extends BaseModel {
@@ -30,4 +33,13 @@ export class Store extends BaseModel {
 
   @OneToMany(() => Debtor, (debtor) => debtor.store)
   debtors: Debtor[];
+
+  @OneToMany(() => SampleMessages, (sample) => sample.store)
+  sample_messages: SampleMessages[];
+
+  @OneToMany(() => Messages, (messages) => messages.store)
+  messages: Messages[];
+
+  @OneToMany(() => Likes, (likes) => likes.store)
+  likes: Likes[];
 }
