@@ -26,4 +26,21 @@ export class DebtorService extends BaseService<
       data: allStore,
     };
   }
+  async findOneById(
+    id: string,
+    options?: IFindOptions<DeepPartial<Debtor>>,
+  ): Promise<{
+    status_code: number;
+    message: string;
+    data: DeepPartial<Debtor>;
+  }> {
+    const debtor = await this.getRepository.findOne({
+      where: { id, store: options.where },
+    });
+    return {
+      status_code: 200,
+      message: 'success',
+      data: debtor,
+    };
+  }
 }
