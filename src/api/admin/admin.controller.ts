@@ -17,7 +17,7 @@ import { CreateAdminDto, UpdateAdminDto } from './dto/index.js';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @ApiOperation({ summary: 'Create"s a new admin' })
+  @ApiOperation({ summary: 'Create a new admin' })
   @ApiResponse({ status: 201, description: 'The admin created successfuly!' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @Post()
