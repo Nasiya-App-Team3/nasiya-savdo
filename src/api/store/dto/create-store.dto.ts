@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -32,18 +31,7 @@ export class CreateStoresDto {
   @IsNumber()
   @IsNotEmpty()
   @Min(0)
-  @MinLength(4)
   pin_code: number;
-
-  @ApiProperty({
-    example: 1000.0,
-    description: 'Initial balance of the store',
-    default: 1000.0,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  @Min(1000)
-  wallet: number;
 
   @ApiProperty({
     example: 'Image',

@@ -25,8 +25,10 @@ export class DebtorController {
   }
 
   @Get()
-  findAll() {
-    return this.debtorService.findAll();
+  findAll(@UserID() id: any) {
+    return this.debtorService.findAll({
+      where: { store: { id } },
+    });
   }
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
