@@ -6,6 +6,7 @@ import { StoreModule } from './store/store.module';
 import { AuthModule } from './auth/auth.module';
 import { DebtorModule } from './debtor/debtor.module';
 import { AdminModule } from './admin/admin.module';
+import { SampleMessagesModule } from './sample_messages/sample_messages.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AdminModule } from './admin/admin.module';
     AuthModule,
     DebtorModule,
     AdminModule,
+    SampleMessagesModule,
   ],
 })
 export class AppModule {}
