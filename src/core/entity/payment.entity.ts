@@ -14,6 +14,9 @@ export class Payments extends BaseModel {
   @Column({ type: 'enum' })
   type: PaymentType;
 
-  @ManyToOne(() => Debt, (debt) => debt.payments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Debt, (debt) => debt.payments, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   debt: Debt;
 }

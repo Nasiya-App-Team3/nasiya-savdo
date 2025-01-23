@@ -13,7 +13,10 @@ export class Messages extends BaseModel {
   @Column({ type: 'enum', default: MessageStatus.PENDING })
   status: MessageStatus;
 
-  @ManyToOne(() => Store, (store) => store.messages, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Store, (store) => store.messages, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   store: Store;
 
   @ManyToOne(() => SampleMessages, (sample) => sample.messages)

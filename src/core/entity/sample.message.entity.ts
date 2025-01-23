@@ -7,6 +7,7 @@ import { Messages } from './message.entity';
 export class SampleMessages extends BaseModel {
   @ManyToOne(() => Store, (store) => store.sample_messages, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   store: Store;
 

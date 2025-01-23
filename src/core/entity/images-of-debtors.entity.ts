@@ -9,6 +9,7 @@ export class ImagesOfDebtors extends BaseModel {
 
   @ManyToOne(() => Debtor, (debtor) => debtor.images, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   debtor: Debtor;
 }
