@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from '../config/index';
 import { DebtsModule } from './debts/debts.module';
+import { StoreModule } from './store/store.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DebtsModule } from './debts/debts.module';
       entities: ['dist/core/entity/*.entity{.ts,.js}'],
     }),
     DebtsModule,
+    StoreModule,
   ],
 })
 export class AppModule {}
