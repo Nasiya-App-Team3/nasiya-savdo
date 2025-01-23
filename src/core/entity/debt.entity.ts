@@ -1,7 +1,9 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseModel } from '../../common/database/index';
 import { Debtor } from './debtor.entity';
 import { DebtPeriod } from '../../common/enum/index';
+import { Payments } from './payment.entity';
+import { ImagesOfDebts } from './images-of-debts.entity';
 
 @Entity({ name: 'debts' })
 export class Debt extends BaseModel {
@@ -19,4 +21,10 @@ export class Debt extends BaseModel {
 
   @ManyToOne(() => Debtor, (debtor) => debtor.debts, { onDelete: 'CASCADE' })
   debtor: Debtor;
+
+  @OneToMany(() => Payments, (payments) => payments.debt)
+  payments: Payments[];
+
+  @OneToMany(() => ImagesOfDebts, (images) => images.debt)
+  images: ImagesOfDebts[];
 }
