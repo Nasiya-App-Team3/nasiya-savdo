@@ -4,6 +4,7 @@ import { config } from '../config/index';
 import { DebtsModule } from './debts/debts.module';
 import { StoreModule } from './store/store.module';
 import { AuthModule } from './auth/auth.module';
+import { DebtorModule } from './debtor/debtor.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
     DebtsModule,
     StoreModule,
     AuthModule,
+    DebtorModule,
   ],
 })
 export class AppModule {}
