@@ -6,10 +6,10 @@ import {
   Delete,
   Param,
   Body,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { Admin } from '../../core/entity/admin.entity';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateAdminDto, UpdateAdminDto } from './dto/index.js';
 
 @ApiTags('Admins')
@@ -21,14 +21,15 @@ export class AdminController {
   @ApiResponse({ status: 201, description: 'The admin created successfuly!' })
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @Post()
-  create(@Body() adminData: CreateAdminDto): Promise<Admin> {
+  create(@Body() adminData: CreateAdminDto) {
     return this.adminService.create(adminData);
   }
 
   @ApiOperation({ summary: 'Get"s all admins' })
+  @ApiBody({ type: CreateAdminDto })
   @ApiResponse({ status: 200, description: 'List of all admins:' })
   @Get()
-  findAll(): Promise<Admin[]> {
+  findAll() {
     return this.adminService.findAll();
   }
 
@@ -36,8 +37,8 @@ export class AdminController {
   @ApiResponse({ status: 200, description: 'The admin"s data:' })
   @ApiResponse({ status: 404, description: 'Admin is not found' })
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Admin> {
-    return this.adminService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.adminService.findOneById(id);
   }
 
   @ApiOperation({ summary: 'Update admin"s data' })
@@ -45,17 +46,17 @@ export class AdminController {
   @ApiResponse({ status: 404, description: 'Admin is not found' })
   @Put(':id')
   update(
-    @Param('id') id: string,
-    @Body() updateData: UpdateAdminDto,
-  ): Promise<Admin> {
-    return this.adminService.update(id, updateData);
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateAdminDto: UpdateAdminDto
+  ) {
+    return this.adminService.update(id, updateAdminDto);
   }
 
   @ApiOperation({ summary: 'Delete"s an admin' })
   @ApiResponse({ status: 200, description: 'The admin successfully deleted!' })
   @ApiResponse({ status: 404, description: 'Admin is not found' })
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<void> {
+  delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.adminService.delete(id);
   }
 }
