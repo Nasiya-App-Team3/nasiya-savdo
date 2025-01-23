@@ -1,14 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsEmail,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   Min,
   MinLength,
 } from 'class-validator';
+import { IsPhoneNumber } from '../../../common/decorator/is-phone-number';
 
 export class CreateStoresDto {
+  @ApiProperty({
+    type: String,
+    description: 'Phone number of store',
+    example: '+998901234567',
+  })
+  @IsPhoneNumber()
+  phone_number: string;
+
+  @ApiProperty({
+    example: 'exampl@exampl.com',
+    description: 'email for the owner of the store',
+  })
+  @IsEmail()
+  email: string;
+
   @ApiProperty({
     example: 'johndoe',
     description: 'login for the owner of the store',
@@ -32,13 +48,4 @@ export class CreateStoresDto {
   @IsNotEmpty()
   @Min(0)
   pin_code: number;
-
-  @ApiProperty({
-    example: 'Image',
-    description: 'Image for the store',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsString()
-  image?: string;
 }

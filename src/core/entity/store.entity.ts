@@ -19,7 +19,7 @@ export class Store extends BaseModel {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: '0.00' })
   wallet: number;
 
-  @Column()
+  @Column({ default: '' })
   image: string;
 
   @Column()
