@@ -10,6 +10,12 @@ export class Store extends BaseModel {
   @Column()
   hashed_password: string;
 
+  @Column({ unique: true })
+  email: string;
+
+  @Column({ unique: true })
+  phone_number: string;
+
   @Column({ type: 'decimal', precision: 10, scale: 2, default: '0.00' })
   wallet: number;
 
