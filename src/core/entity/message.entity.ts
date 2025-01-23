@@ -10,7 +10,7 @@ export class Messages extends BaseModel {
   @Column({ nullable: false })
   message: string;
 
-  @Column({ type: 'enum', default: MessageStatus.PENDING })
+  @Column({ type: 'enum', enum: MessageStatus, default: MessageStatus.PENDING })
   status: MessageStatus;
 
   @ManyToOne(() => Store, (store) => store.messages, {

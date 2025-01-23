@@ -11,7 +11,7 @@ export class Payments extends BaseModel {
   @Column({ type: 'date', default: new Date(Date.now()) })
   date: Date;
 
-  @Column({ type: 'enum' })
+  @Column({ type: 'enum', enum: PaymentType })
   type: PaymentType;
 
   @ManyToOne(() => Debt, (debt) => debt.payments, {
