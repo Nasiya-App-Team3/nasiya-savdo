@@ -6,6 +6,8 @@ import { StoreModule } from './store/store.module';
 import { AuthModule } from './auth/auth.module';
 import { DebtorModule } from './debtor/debtor.module';
 import { AdminModule } from './admin/admin.module';
+import { PaymentModule } from './payment/payment.module';
+import { LikesModule } from './likes/likes.module';
 import { SampleMessagesModule } from './sample_messages/sample_messages.module';
 
 @Module({
@@ -26,6 +28,8 @@ import { SampleMessagesModule } from './sample_messages/sample_messages.module';
     AuthModule,
     DebtorModule,
     AdminModule,
+    PaymentModule,
+    LikesModule,
     SampleMessagesModule,
   ],
 })
