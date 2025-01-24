@@ -14,4 +14,5 @@ export class AdminService extends BaseService<
   constructor(@InjectRepository(Admin) repository: AdminRepository) {
     super(repository);
   }
-}
+} 
+
