@@ -31,7 +31,7 @@ export class LikesController {
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.likesService.findOneById(id);
-  } 
+  }
 
   @Patch(':id')
   update(
