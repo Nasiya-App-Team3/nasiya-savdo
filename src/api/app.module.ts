@@ -9,6 +9,7 @@ import { AdminModule } from './admin/admin.module';
 import { PaymentModule } from './payment/payment.module';
 import { LikesModule } from './likes/likes.module';
 import { SampleMessagesModule } from './sample_messages/sample_messages.module';
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { SampleMessagesModule } from './sample_messages/sample_messages.module';
     PaymentModule,
     LikesModule,
     SampleMessagesModule,
+    MessagesModule,
   ],
 })
 export class AppModule {}
