@@ -10,6 +10,7 @@ import { PaymentModule } from './payment/payment.module';
 import { LikesModule } from './likes/likes.module';
 import { SampleMessagesModule } from './sample_messages/sample_messages.module';
 import { MessagesModule } from './messages/messages.module';
+import { PhoneNumbersModule } from './phone_numbers/phone_numbers.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MessagesModule } from './messages/messages.module';
     LikesModule,
     SampleMessagesModule,
     MessagesModule,
+    PhoneNumbersModule,
   ],
 })
 export class AppModule {}

@@ -5,7 +5,7 @@ import { BaseModel } from 'src/common/database';
 @Entity()
 export class PhoneNumbersOfDebtors extends BaseModel {
   @Column()
-  image: string;
+  phone_number: string;
 
   @ManyToOne(() => Debtor, (debtor) => debtor.phone_numbers, {
     onDelete: 'CASCADE',
