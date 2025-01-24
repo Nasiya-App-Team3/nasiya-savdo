@@ -16,5 +16,5 @@ export class PhoneNumberDto {
   })
   @IsString({ message: 'Debtor ID must be a string' })
   @IsNotEmpty({ message: 'Debtor ID must not be empty' })
-  debtorId: string;
+  debtor: string;
 }

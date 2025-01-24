@@ -65,9 +65,9 @@ export class SampleMessagesController {
     type: CreateSampleMessagesDto,
   })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string, @UserID() storeId: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string, @UserID() store: string) {
     return this.sampleMessagesService.findOneById(id, {
-      where: { store: { id: storeId } },
+      where: { store: { id: store } },
     });
   }
 

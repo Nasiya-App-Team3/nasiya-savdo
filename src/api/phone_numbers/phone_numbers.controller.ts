@@ -34,7 +34,7 @@ export class PhoneNumbersController {
         message: 'success',
         data: {
           phone_number: '+998901234567',
-          debtorId: 'debtor-120283',
+          debtor: 'debtor-120283',
         },
       },
     },
@@ -58,12 +58,12 @@ export class PhoneNumbersController {
           {
             id: '1',
             phone_number: '+998901234567',
-            debtorId: 'debtor-120283',
+            debtor: 'debtor-120283',
           },
           {
             id: '2',
             phone_number: '+998901234568',
-            debtorId: 'debtor-120284',
+            debtor: 'debtor-120284',
           },
         ],
       },
@@ -85,7 +85,7 @@ export class PhoneNumbersController {
         data: {
           id: '1',
           phone_number: '+998901234567',
-          debtorId: 'debtor-120283',
+          debtor: 'debtor-120283',
         },
       },
     },
@@ -112,7 +112,7 @@ export class PhoneNumbersController {
         data: {
           id: '1',
           phone_number: '+998901234567',
-          debtorId: 'debtor-120283',
+          debtor: 'debtor-120283',
         },
       },
     },

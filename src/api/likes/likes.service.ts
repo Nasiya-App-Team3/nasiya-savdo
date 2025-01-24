@@ -21,8 +21,8 @@ export class LikesService extends BaseService<
     super(repository);
   }
   async create(dto: CreateLikeDto) {
-    await this.storeService.findOne(dto.storeId);
-    await this.debtorService.findOneBy({ where: { id: dto.debtorId } });
+    await this.storeService.findOne(dto.store);
+    await this.debtorService.findOneBy({ where: { id: dto.debtor } });
     let created_data = this.getRepository.create({
       ...dto,
     }) as Likes;
