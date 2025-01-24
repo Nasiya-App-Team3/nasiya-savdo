@@ -50,5 +50,5 @@ export class DebtDto {
     example: 'debtor-12345',
   })
   @IsNotEmpty()
-  debtorId: string;
+  debtor: string;
 }

@@ -7,12 +7,12 @@ export class CreateLikeDto {
     example: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
   })
   @IsUUID()
-  storeId: string;
+  store: string;
 
   @ApiProperty({
     description: 'Debtor ID',
     example: 'b1eebc88-8c1c-5df7-aa7d-7cc9ad490b22',
   })
   @IsUUID()
-  debtorId: string;
+  debtor: string;
 }

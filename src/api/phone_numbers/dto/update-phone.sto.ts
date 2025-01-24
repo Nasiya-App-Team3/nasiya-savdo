@@ -19,5 +19,5 @@ export class UpdatePhoneNumberDto extends PartialType(PhoneNumberDto) {
   })
   @IsString({ message: 'Debtor ID must be a string' })
   @IsOptional()
-  debtorId?: string;
+  debtor?: string;
 }
