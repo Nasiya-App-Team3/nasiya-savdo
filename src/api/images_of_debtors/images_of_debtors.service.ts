@@ -8,10 +8,12 @@ import { BaseService } from 'src/infrastructure/lib/baseService';
 
 @Injectable()
 export class ImagesOfDebtorsService extends BaseService<
-CreateImagesOfDebtorDto,
+  CreateImagesOfDebtorDto,
   DeepPartial<ImagesOfDebtors>
-  > {
-  constructor(@InjectRepository(ImagesOfDebtors) repository: ImagesOfDebtorsRepository) {
-      super(repository);
-    }
+> {
+  constructor(
+    @InjectRepository(ImagesOfDebtors) repository: ImagesOfDebtorsRepository,
+  ) {
+    super(repository);
+  }
 }

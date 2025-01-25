@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, HttpStatus, HttpException, Put, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  HttpStatus,
+  HttpException,
+  Put,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ImagesOfDebtorsService } from './images_of_debtors.service';
 import { CreateImagesOfDebtorDto, UpdateImagesOfDebtorDto } from './dto/index';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -6,7 +17,9 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 @ApiTags('Images_of_debtors')
 @Controller('images-of-debtors')
 export class ImagesOfDebtorsController {
-  constructor(private readonly imagesOfDebtorsService: ImagesOfDebtorsService) {}
+  constructor(
+    private readonly imagesOfDebtorsService: ImagesOfDebtorsService,
+  ) {}
 
   @ApiOperation({ summary: 'Create a new image for debtors' })
   @ApiResponse({
@@ -18,7 +31,8 @@ export class ImagesOfDebtorsController {
         message: 'success',
         data: {
           id: 'uuid',
-          image: 'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
+          image:
+            'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
         },
       },
     },
@@ -27,18 +41,18 @@ export class ImagesOfDebtorsController {
   @Post()
   async create(@Body() imageData: CreateImagesOfDebtorDto): Promise<any> {
     try {
-        const data = await this.imagesOfDebtorsService.create(imageData);
-          return {
-            status_code: HttpStatus.CREATED,
-            message: 'success',
-            data,
-          };
-        } catch (error) {
-          throw new HttpException(
-            error.message || 'Failed to create image',
-            HttpStatus.BAD_REQUEST,
-          );
-        }
+      const data = await this.imagesOfDebtorsService.create(imageData);
+      return {
+        status_code: HttpStatus.CREATED,
+        message: 'success',
+        data,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to create image',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @ApiOperation({ summary: 'Get all images' })
@@ -52,7 +66,8 @@ export class ImagesOfDebtorsController {
         data: [
           {
             id: 'uuid',
-            image: 'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
+            image:
+              'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
           },
         ],
       },
@@ -78,7 +93,8 @@ export class ImagesOfDebtorsController {
         message: 'success',
         data: {
           id: 'uuid',
-          image: 'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
+          image:
+            'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
         },
       },
     },
@@ -107,7 +123,8 @@ export class ImagesOfDebtorsController {
         message: 'success',
         data: {
           id: 'uuid',
-          image: 'https://cdn.prod.website-files.com/62d84e447b4f9e7263d31e94/6399a4d27711a5ad2c9bf5cd_ben-sweet-2LowviVHZ-E-unsplash-1.jpeg',
+          image:
+            'https://cdn.prod.website-files.com/62d84e447b4f9e7263d31e94/6399a4d27711a5ad2c9bf5cd_ben-sweet-2LowviVHZ-E-unsplash-1.jpeg',
         },
       },
     },
@@ -115,9 +132,9 @@ export class ImagesOfDebtorsController {
   @ApiResponse({ status: 404, description: 'Image not found' })
   @Put(':id')
   async update(
-      @Param('id', ParseUUIDPipe) id: string,
-      @Body() updateData: UpdateImagesOfDebtorDto,
-    ): Promise<any> {
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateData: UpdateImagesOfDebtorDto,
+  ): Promise<any> {
     const data = await this.imagesOfDebtorsService.update(id, updateData);
     return {
       status_code: HttpStatus.OK,

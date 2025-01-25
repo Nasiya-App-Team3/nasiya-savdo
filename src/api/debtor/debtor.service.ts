@@ -27,7 +27,6 @@ export class DebtorService extends BaseService<
     data: DeepPartial<Debtor>;
   }> {
     const phone_numbers = dto.phone_numbers;
-    console.log(phone_numbers);
 
     const queryRunner =
       this.getRepository.manager.connection.createQueryRunner();
