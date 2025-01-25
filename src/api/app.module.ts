@@ -13,6 +13,7 @@ import { MessagesModule } from './messages/messages.module';
 import { PhoneNumbersModule } from './phone_numbers/phone_numbers.module';
 import { ImagesOfDebtsModule } from './images_of_debts/images_of_debts.module';
 import { ImagesOfDebtorsModule } from './images_of_debtors/images_of_debtors.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ImagesOfDebtorsModule } from './images_of_debtors/images_of_debtors.mod
     PhoneNumbersModule,
     ImagesOfDebtsModule,
     ImagesOfDebtorsModule,
+    UploadModule,
   ],
 })
 export class AppModule {}

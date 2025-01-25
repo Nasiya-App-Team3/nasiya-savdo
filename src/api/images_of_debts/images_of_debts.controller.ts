@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, HttpStatus, HttpException, ParseUUIDPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  HttpStatus,
+  HttpException,
+  ParseUUIDPipe,
+} from '@nestjs/common';
 import { ImagesOfDebtsService } from './images_of_debts.service';
 import { CreateImagesOfDebtDto, UpdateImagesOfDebtDto } from './dto/index';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -18,27 +30,32 @@ export class ImagesOfDebtsController {
         message: 'success',
         data: {
           id: 'uuid',
-          image: 'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
+          image:
+            'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
         },
       },
     },
   })
   @ApiResponse({ status: 400, description: 'Validation failed' })
   @Post()
-  async create(@Body() createImagesOfDebtDto: CreateImagesOfDebtDto): Promise<any> {
+  async create(
+    @Body() createImagesOfDebtDto: CreateImagesOfDebtDto,
+  ): Promise<any> {
     try {
-        const data = await this.imagesOfDebtsService.create(createImagesOfDebtDto);
-        return {
-          status_code: HttpStatus.CREATED,
-          message: 'success',
-          data,
-        };
-      } catch (error) {
-        throw new HttpException(
-          error.message || 'Failed to create image',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      const data = await this.imagesOfDebtsService.create(
+        createImagesOfDebtDto,
+      );
+      return {
+        status_code: HttpStatus.CREATED,
+        message: 'success',
+        data,
+      };
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to create image',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   @ApiOperation({ summary: 'Get all images' })
@@ -52,7 +69,8 @@ export class ImagesOfDebtsController {
         data: [
           {
             id: 'uuid',
-            image: 'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
+            image:
+              'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
           },
         ],
       },
@@ -78,7 +96,8 @@ export class ImagesOfDebtsController {
         message: 'success',
         data: {
           id: 'uuid',
-          image: 'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
+          image:
+            'https://static.vecteezy.com/vite/assets/photo-masthead-375-BoK_p8LG.webp',
         },
       },
     },
@@ -107,7 +126,8 @@ export class ImagesOfDebtsController {
         message: 'success',
         data: {
           id: 'uuid',
-          image: 'https://cdn.prod.website-files.com/62d84e447b4f9e7263d31e94/6399a4d27711a5ad2c9bf5cd_ben-sweet-2LowviVHZ-E-unsplash-1.jpeg',
+          image:
+            'https://cdn.prod.website-files.com/62d84e447b4f9e7263d31e94/6399a4d27711a5ad2c9bf5cd_ben-sweet-2LowviVHZ-E-unsplash-1.jpeg',
         },
       },
     },
