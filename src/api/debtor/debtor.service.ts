@@ -2,9 +2,14 @@ import { BaseService } from 'src/infrastructure/lib/baseService';
 import { CreateDebtorDto } from './dto/create-debtor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial } from 'typeorm';
-import { Debtor, PhoneNumbersOfDebtors } from '../../core/entity/index';
+import {
+  Debtor,
+  ImagesOfDebtors,
+  PhoneNumbersOfDebtors,
+} from '../../core/entity/index';
 import {
   DebtorRepository,
+  ImagesOfDebtorsRepository,
   PhoneNumbersOfDebtorsRepository,
 } from '../../core/repository/index';
 import { IFindOptions } from 'src/infrastructure/lib/baseService/interface';
@@ -17,6 +22,8 @@ export class DebtorService extends BaseService<
     @InjectRepository(Debtor) repository: DebtorRepository,
     @InjectRepository(PhoneNumbersOfDebtors)
     private readonly phoneRepo: PhoneNumbersOfDebtorsRepository,
+    @InjectRepository(ImagesOfDebtors)
+    private readonly imagesRepo: ImagesOfDebtorsRepository,
   ) {
     super(repository);
   }
@@ -26,33 +33,26 @@ export class DebtorService extends BaseService<
     message: string;
     data: DeepPartial<Debtor>;
   }> {
-    const phone_numbers = dto.phone_numbers;
+    const newDebtor = this.getRepository.create(dto);
+    await this.getRepository.save(newDebtor);
 
-    const queryRunner =
-      this.getRepository.manager.connection.createQueryRunner();
+    const phoneTransaction =
+      this.phoneRepo.manager.connection.createQueryRunner();
 
-    await queryRunner.startTransaction();
+    await phoneTransaction.connect();
+    await phoneTransaction.startTransaction();
     try {
-      const newDebtor = this.getRepository.create(dto);
-      await queryRunner.manager.save(newDebtor);
-
-      for (const phone_number of phone_numbers) {
+      for (const phone_number of dto.phone_numbers) {
         const newPhone = this.phoneRepo.create({
           debtor: { id: newDebtor.id },
           phone_number: phone_number,
         });
-        await queryRunner.manager.save(newPhone);
+        await phoneTransaction.manager.save(newPhone);
       }
 
-      await queryRunner.commitTransaction();
-
-      return {
-        status_code: 201,
-        message: 'success',
-        data: newDebtor,
-      };
+      await phoneTransaction.commitTransaction();
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      await phoneTransaction.rollbackTransaction();
 
       return {
         status_code: 400,
@@ -62,8 +62,44 @@ export class DebtorService extends BaseService<
         data: null,
       };
     } finally {
-      await queryRunner.release();
+      await phoneTransaction.release();
     }
+
+    const imageTransaction =
+      this.imagesRepo.manager.connection.createQueryRunner();
+
+    await imageTransaction.connect();
+    await imageTransaction.startTransaction();
+    try {
+      for (const image of dto.images) {
+        const newImage = this.imagesRepo.create({
+          debtor: { id: newDebtor.id },
+          image: image,
+        });
+        await this.imagesRepo.save(newImage);
+      }
+      await imageTransaction.commitTransaction();
+    } catch (error) {
+      await imageTransaction.rollbackTransaction();
+
+      return {
+        status_code: 400,
+        message:
+          'Error occurred while creating debtor and images' + error.message,
+        data: null,
+      };
+    } finally {
+      await imageTransaction.release();
+    }
+
+    delete newDebtor.images;
+    delete newDebtor.phone_numbers;
+
+    return {
+      status_code: 201,
+      message: 'success',
+      data: newDebtor,
+    };
   }
 
   async findAll(options?: IFindOptions<DeepPartial<Debtor>>): Promise<{
