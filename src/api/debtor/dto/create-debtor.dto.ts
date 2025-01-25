@@ -49,4 +49,9 @@ export class CreateDebtorDto {
     message: 'Each phone number must be a valid Uzbekistan phone number',
   })
   phone_numbers: string[];
+
+  @IsArray()
+  @ArrayMaxSize(2)
+  @ArrayMinSize(2)
+  images: string[];
 }

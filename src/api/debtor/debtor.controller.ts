@@ -57,7 +57,7 @@ export class DebtorController {
   findAll(@UserID() id: string) {
     return this.debtorService.findAll({
       where: { store: { id } },
-      relations: ['phone_numbers'],
+      relations: ['phone_numbers', 'images'],
     });
   }
 
