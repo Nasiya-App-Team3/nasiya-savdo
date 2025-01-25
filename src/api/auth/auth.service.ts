@@ -27,18 +27,18 @@ export class AuthService {
     }
     const isMatch = await this.bcryptManage.comparePassword(
       authLoginDto.hashed_password,
-      currentStore.hashed_password,
+      currentStore.data.hashed_password,
     );
     if (!isMatch) {
       throw new BadRequestException('login or password not found!');
     }
-    if (!currentStore.is_active) {
+    if (!currentStore.data.is_active) {
       throw new ForbiddenException(`You are inactive. Call the admin`);
     }
     const payload: IPayload = {
-      sub: currentStore.id,
-      login: currentStore.login,
-      is_active: currentStore.is_active,
+      sub: currentStore.data.id,
+      login: currentStore.data.login,
+      is_active: currentStore.data.is_active,
     };
     const accessToken = await this.jwtService.sign(payload, {
       secret: config.ACCESS_TOKEN_KEY,
@@ -54,6 +54,10 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  findOne(id: string) {
+    return this.storeService.findOne(id);
   }
 
   async refreshToken(refreshToken: string) {

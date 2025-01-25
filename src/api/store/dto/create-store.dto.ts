@@ -11,6 +11,15 @@ import { IsPhoneNumber } from '../../../common/decorator/is-phone-number';
 
 export class CreateStoresDto {
   @ApiProperty({
+    example: 'john doe',
+    description: 'full name for the owner of the store',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  full_name: string;
+
+  @ApiProperty({
     type: String,
     description: 'Phone number of store',
     example: '+998901234567',
