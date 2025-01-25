@@ -71,7 +71,7 @@ export class PhoneNumbersController {
   })
   @Get()
   findAll() {
-    return this.phonService.findAll();
+    return this.phonService.findAll({ relations: ['debtor'] });
   }
 
   @ApiOperation({ summary: 'Get a phone number by ID' })
