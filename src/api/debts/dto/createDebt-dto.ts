@@ -6,6 +6,9 @@ import {
   IsOptional,
   IsString,
   IsDateString,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
 } from 'class-validator';
 import { DebtPeriod } from 'src/common/enum';
 
@@ -44,6 +47,11 @@ export class DebtDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(2)
+  images: string[];
 
   @ApiProperty({
     description: 'The ID of the debtor',
