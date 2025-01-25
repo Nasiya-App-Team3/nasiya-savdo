@@ -33,9 +33,6 @@ export class DebtorService extends BaseService<
     message: string;
     data: DeepPartial<Debtor>;
   }> {
-    const phone_numbers = dto.phone_numbers;
-    const images = dto.images;
-
     const newDebtor = this.getRepository.create(dto);
     await this.getRepository.save(newDebtor);
 
@@ -45,7 +42,7 @@ export class DebtorService extends BaseService<
     await phoneTransaction.connect();
     await phoneTransaction.startTransaction();
     try {
-      for (const phone_number of phone_numbers) {
+      for (const phone_number of dto.phone_numbers) {
         const newPhone = this.phoneRepo.create({
           debtor: { id: newDebtor.id },
           phone_number: phone_number,
@@ -74,7 +71,7 @@ export class DebtorService extends BaseService<
     await imageTransaction.connect();
     await imageTransaction.startTransaction();
     try {
-      for (const image of images) {
+      for (const image of dto.images) {
         const newImage = this.imagesRepo.create({
           debtor: { id: newDebtor.id },
           image: image,
@@ -94,6 +91,9 @@ export class DebtorService extends BaseService<
     } finally {
       await imageTransaction.release();
     }
+
+    delete newDebtor.images;
+    delete newDebtor.phone_numbers;
 
     return {
       status_code: 201,
