@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
   Res,
@@ -17,6 +18,7 @@ import {
 import { Response } from 'express';
 import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
+import { UserID } from 'src/common/decorator/user-id.decorator';
 
 class TokenResponse {
   accessToken: string;
@@ -46,6 +48,13 @@ export class authController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.login(authLoginDto, res);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('profile')
+  @ApiBearerAuth()
+  findAll(@UserID() id: string) {
+    return this.authService.findOne(id);
   }
 
   @ApiOperation({ summary: 'New access token for admin' })
