@@ -9,12 +9,4 @@ export class PhoneNumberDto {
   @IsString({ message: 'Phone number must be a string' })
   @IsNotEmpty({ message: 'Phone number must not be empty' })
   phone_number: string;
-
-  @ApiProperty({
-    description: 'The ID of the debtor',
-    example: '123',
-  })
-  @IsString({ message: 'Debtor ID must be a string' })
-  @IsNotEmpty({ message: 'Debtor ID must not be empty' })
-  debtorId: string;
 }

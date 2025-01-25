@@ -11,13 +11,4 @@ export class UpdatePhoneNumberDto extends PartialType(PhoneNumberDto) {
   @IsString({ message: 'Phone number must be a string' })
   @IsOptional()
   phone_number?: string;
-
-  @ApiProperty({
-    description: 'The updated ID of the debtor',
-    example: '123',
-    required: false,
-  })
-  @IsString({ message: 'Debtor ID must be a string' })
-  @IsOptional()
-  debtorId?: string;
 }

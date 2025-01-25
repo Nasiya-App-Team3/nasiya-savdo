@@ -1,4 +1,12 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
+  Matches,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateDebtorDto {
@@ -27,4 +35,18 @@ export class CreateDebtorDto {
   @IsString()
   @IsOptional()
   store: string;
+
+  @ApiProperty({
+    example: ['+998901234567', '+998911234567'],
+    description: 'List of phone numbers (minimum 1, maximum 3)',
+    type: [String],
+  })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(3)
+  @Matches(/^(\+998|998|8)?(33|71|90|91|93|94|95|97|98|99)\d{7}$/, {
+    each: true,
+    message: 'Each phone number must be a valid Uzbekistan phone number',
+  })
+  phone_numbers: string[];
 }
