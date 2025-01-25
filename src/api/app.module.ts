@@ -11,6 +11,8 @@ import { LikesModule } from './likes/likes.module';
 import { SampleMessagesModule } from './sample_messages/sample_messages.module';
 import { MessagesModule } from './messages/messages.module';
 import { PhoneNumbersModule } from './phone_numbers/phone_numbers.module';
+import { ImagesOfDebtsModule } from './images_of_debts/images_of_debts.module';
+import { ImagesOfDebtorsModule } from './images_of_debtors/images_of_debtors.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { PhoneNumbersModule } from './phone_numbers/phone_numbers.module';
     SampleMessagesModule,
     MessagesModule,
     PhoneNumbersModule,
+    ImagesOfDebtsModule,
+    ImagesOfDebtorsModule,
   ],
 })
 export class AppModule {}
