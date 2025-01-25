@@ -17,11 +17,7 @@ import {
 import { Response } from 'express';
 import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
-
-class TokenResponse {
-  accessToken: string;
-  refreshToken: string;
-}
+import { TokenResponse } from 'src/common/interfaces';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -33,7 +29,7 @@ export class authController {
   })
   @ApiResponse({
     status: HttpStatus.FORBIDDEN,
-    description: 'You are inactive. Call the admin',
+    description: 'You are inactive. Call the store',
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -48,7 +44,7 @@ export class authController {
     return this.authService.login(authLoginDto, res);
   }
 
-  @ApiOperation({ summary: 'New access token for admin' })
+  @ApiOperation({ summary: 'New access token for store' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Get new access token success',
@@ -78,10 +74,10 @@ export class authController {
     return this.authService.refreshToken(refresh_token);
   }
 
-  @ApiOperation({ summary: 'Logout admin' })
+  @ApiOperation({ summary: 'Logout store' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Admin logged out success',
+    description: 'Store logged out success',
     schema: {
       example: {
         status_code: 200,
@@ -92,7 +88,7 @@ export class authController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Fail on logging out admin',
+    description: 'Fail on logging out store',
     schema: {
       example: {
         status_code: 400,
