@@ -21,16 +21,22 @@ export class LikesService extends BaseService<
     super(repository);
   }
   async create(dto: CreateLikeDto) {
-    await this.storeService.findOne(dto.store);
-    await this.debtorService.findOneBy({ where: { id: dto.debtor } });
-    let created_data = this.getRepository.create({
-      ...dto,
-    }) as Likes;
-    created_data = await this.getRepository.save(created_data);
-    return {
-      status_code: 201,
-      message: 'success',
-      data: created_data,
-    };
+    try {
+      await this.storeService.findOne(dto.store);
+      await this.debtorService.findOneBy({
+        where: { id: dto.debtor },
+      });
+      let created_data = (await this.getRepository.create({
+        ...dto,
+      })) as Likes;
+      created_data = await this.getRepository.save(created_data);
+      return {
+        status_code: 201,
+        message: 'success',
+        data: created_data,
+      };
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

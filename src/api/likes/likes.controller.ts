@@ -99,7 +99,13 @@ export class LikesController {
   })
   @Get()
   findAll() {
-    return this.likesService.findAll();
+    try {
+      return this.likesService.findAll({
+        relations: ['store', 'debtor'],
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @ApiOperation({
@@ -148,7 +154,9 @@ export class LikesController {
   })
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.likesService.findOneById(id);
+    return this.likesService.findOneById(id, {
+      relations: ['store', 'debtor'],
+    });
   }
 
   @ApiOperation({
