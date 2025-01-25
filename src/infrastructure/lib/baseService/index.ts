@@ -23,14 +23,18 @@ export class BaseService<CreateDto, Entity> {
   }
 
   async findAll(options?: IFindOptions<Entity>) {
-    const data = (await this.repository.find({
-      ...options,
-    })) as Entity[];
-    return {
-      status_code: 200,
-      message: 'success',
-      data: data,
-    };
+    try {
+      const data = (await this.repository.find({
+        ...options,
+      })) as Entity[];
+      return {
+        status_code: 200,
+        message: 'success',
+        data: data,
+      };
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async findAllWithPagination(options?: IFindOptions<Entity>) {

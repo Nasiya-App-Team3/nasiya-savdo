@@ -1,4 +1,4 @@
-import { Entity, OneToOne, ManyToOne } from 'typeorm';
+import { Entity, OneToOne, ManyToOne, JoinColumn } from 'typeorm';
 import { Debtor } from './debtor.entity';
 import { Store } from './store.entity';
 import { BaseModel } from 'src/common/database';
@@ -15,5 +15,6 @@ export class Likes extends BaseModel {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
+  @JoinColumn({ name: 'debtor_id' })
   debtor: Debtor;
 }
