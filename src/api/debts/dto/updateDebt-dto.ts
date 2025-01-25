@@ -48,5 +48,5 @@ export class UpdateDebtDto {
     example: 'debtor-12345',
   })
   @IsOptional()
-  debtorId?: string;
+  debtor?: string;
 }

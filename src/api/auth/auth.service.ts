@@ -9,6 +9,7 @@ import { BcryptManage } from '../../infrastructure/lib/bcrypt/index';
 import { JwtService } from '@nestjs/jwt';
 import { IPayload } from '../../common/interfaces/index';
 import { config } from '../../config/index';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
     private readonly bcryptManage: BcryptManage,
     private readonly jwtService: JwtService,
   ) {}
-  async login(authLoginDto: AuthLoginDto) {
+  async login(authLoginDto: AuthLoginDto, res: Response) {
     const currentStore = await this.storeService.findByLogin(
       authLoginDto.login,
     );
@@ -48,9 +49,73 @@ export class AuthService {
       expiresIn: config.REFRESH_TOKEN_TIME,
     });
 
+    this.writeToCookie(refreshToken, res);
     return {
       accessToken,
       refreshToken,
     };
+  }
+
+  async refreshToken(refreshToken: string) {
+    let data: IPayload;
+    try {
+      data = await this.jwtService.verify(refreshToken, {
+        secret: config.REFRESH_TOKEN_KEY,
+      });
+    } catch (error) {
+      throw new BadRequestException(`Error on refresh token: ${error}`);
+    }
+    await this.storeService.findOne(data?.sub);
+    const payload: IPayload = {
+      sub: data.sub,
+      login: data.login,
+      is_active: data.is_active,
+    };
+    let access_token: any;
+    try {
+      access_token = await this.jwtService.signAsync(payload, {
+        secret: config.ACCESS_TOKEN_KEY,
+        expiresIn: config.ACCESS_TOKEN_TIME,
+      });
+    } catch (error) {
+      throw new BadRequestException(`Error on generate access token: ${error}`);
+    }
+    return {
+      status_code: 200,
+      message: 'success',
+      data: {
+        token: access_token,
+        expire: config.ACCESS_TOKEN_TIME,
+      },
+    };
+  }
+
+  async logout(refresh_token: string, res: Response) {
+    let data: IPayload;
+    try {
+      data = await this.jwtService.verify(refresh_token, {
+        secret: config.REFRESH_TOKEN_KEY,
+      });
+    } catch (error) {
+      throw new BadRequestException(`Error on refresh token: ${error}`);
+    }
+    await this.storeService.findOne(data?.sub);
+    res.clearCookie('refresh_token_store');
+    return {
+      status_code: 200,
+      message: 'success',
+      data: {},
+    };
+  }
+
+  private async writeToCookie(refresh_token: string, res: Response) {
+    try {
+      res.cookie('refresh_token_store', refresh_token, {
+        maxAge: 15 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+      });
+    } catch (error) {
+      throw new BadRequestException(`Error on write to cookie: ${error}`);
+    }
   }
 }
