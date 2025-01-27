@@ -14,6 +14,7 @@ import { PhoneNumbersModule } from './phone_numbers/phone_numbers.module';
 import { ImagesOfDebtsModule } from './images_of_debts/images_of_debts.module';
 import { ImagesOfDebtorsModule } from './images_of_debtors/images_of_debtors.module';
 import { UploadModule } from './upload/upload.module';
+import { SetupModule } from './setup/setup.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { UploadModule } from './upload/upload.module';
     ImagesOfDebtsModule,
     ImagesOfDebtorsModule,
     UploadModule,
+    SetupModule,
   ],
 })
 export class AppModule {}
