@@ -24,7 +24,6 @@ import { UserID } from 'src/common/decorator/user-id.decorator';
 @ApiTags('Auth')
 @ApiBearerAuth()
 @Controller('auth')
-@UseGuards(AuthGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -57,7 +56,8 @@ export class AuthController {
     status: HttpStatus.OK,
     description: 'Admin profile fetched successfully',
   })
-  findAll(@UserID() id: string) {
+  @UseGuards(AuthGuard)
+  profile(@UserID() id: string) {
     return this.authService.findOne(id);
   }
 
