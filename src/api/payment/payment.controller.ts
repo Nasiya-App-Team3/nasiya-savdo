@@ -56,7 +56,8 @@ export class PaymentController {
     description: 'Failed to Validation',
     schema: {
       example: {
-        message: 'Unexpected token \',\', ..."   "sum": ,\n    "typ"... is not valid JSON',
+        message:
+          'Unexpected token \',\', ..."   "sum": ,\n    "typ"... is not valid JSON',
         error: 'Bad Request',
         statusCode: 400,
       },

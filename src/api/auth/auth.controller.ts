@@ -18,15 +18,8 @@ import {
 import { Response } from 'express';
 import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
-
 import { TokenResponse } from 'src/common/interfaces';
 import { UserID } from 'src/common/decorator/user-id.decorator';
-
-class TokenResponse {
-  accessToken: string;
-  refreshToken: string;
-}
-
 
 @ApiTags('Auth')
 @ApiBearerAuth()
@@ -57,9 +50,7 @@ export class AuthController {
     return this.authService.login(authLoginDto, res);
   }
 
-
   @ApiOperation({ summary: 'New access token for store' })
-
   @Get('profile')
   @ApiOperation({ summary: 'Get admin profile' })
   @ApiResponse({
@@ -72,7 +63,6 @@ export class AuthController {
 
   @Post('refresh-token')
   @ApiOperation({ summary: 'Generate new access token' })
-
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'New access token generated successfully',
@@ -101,12 +91,11 @@ export class AuthController {
     return this.authService.refreshToken(refresh_token);
   }
 
-
   @ApiOperation({ summary: 'Logout store' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Store logged out success',
-
+  })
   @Post('logout')
   @ApiOperation({ summary: 'Logout admin' })
   @ApiResponse({

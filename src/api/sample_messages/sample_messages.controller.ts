@@ -23,17 +23,17 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-@ApiTags('Sample Messages')
-@ApiBearerAuth('access-token', { description: 'JWT authorization' })
+@ApiTags()
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller('sample/messages')
 export class SampleMessagesController {
   constructor(private readonly sampleMessagesService: SampleMessagesService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new sample message' })
+  @ApiOperation({ summary: 'Create a new sample messages' })
   @ApiCreatedResponse({
-    description: 'The sample message has been successfully created.',
+    description: 'The debtor has been successfully created.',
     type: CreateSampleMessagesDto,
   })
   create(
@@ -46,9 +46,9 @@ export class SampleMessagesController {
     });
   }
 
-  @ApiOperation({ summary: 'Get all sample messages' })
+  @ApiOperation({ summary: 'ger all sample messages' })
   @ApiOkResponse({
-    description: 'List of all sample messages for the store.',
+    description: 'values return in array',
     type: [CreateSampleMessagesDto],
   })
   @Get()
@@ -56,12 +56,12 @@ export class SampleMessagesController {
     return this.sampleMessagesService.findAll({ where: { store: { id } } });
   }
 
-  @ApiOperation({ summary: 'Get one sample message by ID' })
+  @ApiOperation({ summary: 'git one sample messages by id' })
   @ApiNotFoundResponse({
-    description: 'Sample message not found.',
+    description: 'sample not found',
   })
   @ApiOkResponse({
-    description: 'Successfully retrieved the sample message.',
+    description: 'success',
     type: CreateSampleMessagesDto,
   })
   @Get(':id')
@@ -71,12 +71,12 @@ export class SampleMessagesController {
     });
   }
 
-  @ApiOperation({ summary: 'Update one sample message by ID' })
+  @ApiOperation({ summary: 'update one by id' })
   @ApiNotFoundResponse({
-    description: 'Sample message with the given ID not found.',
+    description: 'if you enter wrong id, this error return to you',
   })
   @ApiOkResponse({
-    description: 'Successfully updated the sample message.',
+    description: 'success',
     type: UpdateSampleMessagesDto,
   })
   @Put(':id')
@@ -87,12 +87,12 @@ export class SampleMessagesController {
     return this.sampleMessagesService.update(id, updateSampleMessages);
   }
 
-  @ApiOperation({ summary: 'Delete one sample message by ID' })
+  @ApiOperation({ summary: 'delete one by id' })
   @ApiNotFoundResponse({
-    description: 'Sample message with the given ID not found.',
+    description: 'if you enter wrong id, this error return to you',
   })
   @ApiOkResponse({
-    description: 'Successfully deleted the sample message.',
+    description: 'success',
   })
   @Delete(':id')
   delete(@Param('id', ParseUUIDPipe) id: string) {
