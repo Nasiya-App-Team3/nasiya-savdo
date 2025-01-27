@@ -7,7 +7,6 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
-  UseGuards,
   HttpException,
   Res,
   HttpStatus,
@@ -26,11 +25,8 @@ import { LoginAdminDto } from './dto/login-admin.dto';
 import { Response } from 'express';
 import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { TokenResponse } from 'src/common/interfaces';
-import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
 
 @ApiTags('Admins')
-@ApiBearerAuth()
-@UseGuards(AuthGuard)
 @Controller('admins')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}

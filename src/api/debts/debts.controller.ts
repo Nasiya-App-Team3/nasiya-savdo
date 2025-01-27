@@ -7,6 +7,7 @@ import {
   Put,
   Param,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -14,6 +15,7 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { DebtDto } from './dto/createDebt-dto';
 import { DebtsService } from './debts.service';
@@ -76,9 +78,32 @@ export class DebtsController {
       },
     },
   })
+  @ApiQuery({
+    name: 'debtor_id',
+    required: true,
+    type: String,
+    description: 'debtor id related to debt',
+  })
+  @ApiQuery({
+    name: 'take',
+    required: true,
+    type: Number,
+    description: 'Number of records to retrieve (pagination)',
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: true,
+    type: Number,
+    description: 'Number of records to skip (pagination)',
+  })
   @Get()
-  findAll() {
-    return this.debtsService.findAll();
+  findAll(@Query() query: any) {
+    return this.debtsService.findAll({
+      where: { debtor: { id: query.debtor_id } },
+      skip: query.skip,
+      take: query.take,
+      relations: ['images'],
+    });
   }
 
   @ApiOperation({ summary: 'Retrieve a single debt by ID' })
