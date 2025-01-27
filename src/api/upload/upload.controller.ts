@@ -4,14 +4,44 @@ import {
   UploadedFiles,
   UseInterceptors,
   BadRequestException,
+  HttpStatus,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Upload API')
 @Controller('upload')
 export class UploadController {
   @Post()
+  @ApiOperation({
+    summary: 'Upload files',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Files successfully uploaded',
+    schema: {
+      example: [
+        {
+          originalname: 'image1.jpg',
+          filename: '1676372639291-ks8asjk.jpg',
+          path: 'http://localhost:3000/static/1676372639291-ks8asjk.jpg',
+        },
+      ],
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid file format',
+    schema: {
+      example: {
+        statusCode: 400,
+        message: 'Only JPEG, JPG, PNG, SVG formats can be uploaded',
+        error: 'Bad Request',
+      },
+    },
+  })
   @UseInterceptors(
     FilesInterceptor('files', 2, {
       storage: diskStorage({
