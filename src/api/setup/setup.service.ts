@@ -7,7 +7,6 @@ import {
   DebtorRepository,
   StoreRepository,
 } from 'src/core/repository';
-import { BcryptManage } from 'src/infrastructure/lib/bcrypt';
 import { AdminRoles, DebtPeriod } from 'src/common/enum';
 import * as bcrypt from 'bcrypt';
 
@@ -46,6 +45,7 @@ export class SetupService {
     });
 
     const newStore1 = this.storeRepo.create({
+      full_name: 'Tets1 Test1ov',
       phone_number: '+998901234567',
       email: 'test1@gmail.com',
       login: 'test1',
@@ -54,6 +54,7 @@ export class SetupService {
     });
 
     const newStore2 = this.storeRepo.create({
+      full_name: 'Test2 Test2ov',
       phone_number: '+998911234567',
       email: 'test2@gmail.com',
       login: 'test2',
