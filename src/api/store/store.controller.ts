@@ -128,7 +128,7 @@ export class StoreController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get oen store',
+    description: 'Get one store',
     schema: {
       example: {
         status_code: 200,

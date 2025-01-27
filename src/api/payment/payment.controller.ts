@@ -56,8 +56,7 @@ export class PaymentController {
     description: 'Failed to Validation',
     schema: {
       example: {
-        message:
-          'Unexpected token \',\', ..."   "sum": ,\n    "typ"... is not valid JSON',
+        message: 'Unexpected token \',\', ..."   "sum": ,\n    "typ"... is not valid JSON',
         error: 'Bad Request',
         statusCode: 400,
       },
@@ -69,11 +68,11 @@ export class PaymentController {
   }
 
   @ApiOperation({
-    summary: 'Find All Payment',
+    summary: 'Find All Payments',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Find All Payment',
+    description: 'Find All Payments',
     schema: {
       example: {
         status_code: 200,
@@ -142,11 +141,11 @@ export class PaymentController {
   }
 
   @ApiOperation({
-    summary: 'Patch One Payment',
+    summary: 'Update Payment',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Patch One Payment',
+    description: 'Updated Payment',
     schema: {
       example: {
         status_code: 200,
@@ -175,11 +174,11 @@ export class PaymentController {
   }
 
   @ApiOperation({
-    summary: 'Delete One Payment',
+    summary: 'Delete Payment',
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Delete One Payment',
+    description: 'Deleted Payment',
     schema: {
       example: {
         status_code: 200,
@@ -201,11 +200,11 @@ export class PaymentController {
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Not found Payment',
+    description: 'Payment Not Found',
     schema: {
       example: {
         statusCode: 404,
-        message: 'not found',
+        message: 'Payment not found',
       },
     },
   })
