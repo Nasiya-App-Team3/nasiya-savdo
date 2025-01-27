@@ -1,22 +1,25 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
   Put,
-  Delete,
-  Param,
-  Body,
-  ParseUUIDPipe,
-  HttpStatus,
+  UseGuards,
   HttpException,
   Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import {
-  ApiBearerAuth,
+  ApiTags,
   ApiOperation,
   ApiResponse,
-  ApiTags,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 import { CreateAdminDto, UpdateAdminDto } from './dto';
 import { LoginAdminDto } from './dto/login-admin.dto';
@@ -25,164 +28,94 @@ import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { TokenResponse } from 'src/common/interfaces';
 
 @ApiTags('Admins')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 @Controller('admins')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @Post()
   @ApiOperation({ summary: 'Create a new admin' })
   @ApiResponse({
-    status: 201,
-    description: 'The admin was created successfully!',
-    schema: {
-      example: {
-        status_code: 201,
-        message: 'success',
-        data: {
-          id: 'uuid',
-          username: 'admin007',
-          hashed_password: '$2b$10$hashedpassword',
-          phone_number: '+998 90 123 45 67',
-          role: 'ADMIN',
-          created_at: '2023-01-01T00:00:00.000Z',
-          updated_at: '2023-01-01T00:00:00.000Z',
-        },
-      },
-    },
+    status: 400,
+    description: 'Validation failed.',
   })
-  @ApiResponse({ status: 400, description: 'Validation failed' })
-  @Post()
+  @ApiCreatedResponse({
+    description: 'The admin has been successfully created.',
+    type: CreateAdminDto,
+  })
   async create(@Body() adminData: CreateAdminDto): Promise<any> {
     try {
-      const data = await this.adminService.create(adminData);
-      return {
-        status_code: HttpStatus.CREATED,
-        message: 'success',
-        data,
-      };
+      return this.adminService.create(adminData);
     } catch (error) {
       throw new HttpException(
-        error.message || 'Failed to create admin',
+        error.message || 'Failed to create admin.',
         HttpStatus.BAD_REQUEST,
       );
     }
   }
 
-  @ApiOperation({ summary: 'Get all admins' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of all admins',
-    schema: {
-      example: {
-        status_code: 200,
-        message: 'success',
-        data: [
-          {
-            id: 'uuid',
-            username: 'admin007',
-            hashed_password: '$2b$10$hashedpassword',
-            phone_number: '+998 90 123 45 67',
-            role: 'ADMIN',
-            created_at: '2023-01-01T00:00:00.000Z',
-            updated_at: '2023-01-01T00:00:00.000Z',
-          },
-        ],
-      },
-    },
-  })
   @Get()
+  @ApiOperation({ summary: 'Get all admins' })
+  @ApiOkResponse({
+    description: 'List of all admins.',
+    type: [CreateAdminDto],
+  })
   async findAll(): Promise<any> {
     return this.adminService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get an admin by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'The admin data',
-    schema: {
-      example: {
-        status_code: 200,
-        message: 'success',
-        data: {
-          id: 'uuid',
-          username: 'admin007',
-          hashed_password: '$2b$10$hashedpassword',
-          phone_number: '+998 90 123 45 67',
-          role: 'ADMIN',
-          created_at: '2023-01-01T00:00:00.000Z',
-          updated_at: '2023-01-01T00:00:00.000Z',
-        },
-      },
-    },
-  })
-  @ApiResponse({ status: 404, description: 'Admin not found' })
   @Get(':id')
+  @ApiOperation({ summary: 'Get an admin by ID' })
+  @ApiOkResponse({
+    description: 'Return the admin data.',
+    type: CreateAdminDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found.',
+  })
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     const data = await this.adminService.findOneById(id);
     if (!data) {
-      throw new HttpException('Admin not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('Admin not found.', HttpStatus.NOT_FOUND);
     }
-    return {
-      status_code: HttpStatus.OK,
-      message: 'success',
-      data,
-    };
+    return data;
   }
 
-  @ApiOperation({ summary: 'Update admin data' })
-  @ApiResponse({
-    status: 200,
-    description: 'The admin was successfully updated',
-    schema: {
-      example: {
-        status_code: 200,
-        message: 'success',
-        data: {
-          id: 'uuid',
-          username: 'updatedAdmin',
-          hashed_password: '$2b$10$hashedpassword',
-          phone_number: '+998 90 123 45 67',
-          role: 'ADMIN',
-          created_at: '2023-01-01T00:00:00.000Z',
-          updated_at: '2023-01-02T00:00:00.000Z',
-        },
-      },
-    },
-  })
-  @ApiResponse({ status: 404, description: 'Admin not found' })
   @Put(':id')
+  @ApiOperation({ summary: 'Update admin data' })
+  @ApiOkResponse({
+    description: 'The admin has been successfully updated.',
+    type: UpdateAdminDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found.',
+  })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateData: UpdateAdminDto,
   ): Promise<any> {
-    const data = await this.adminService.update(id, updateData);
-    return {
-      status_code: HttpStatus.OK,
-      message: 'success',
-      data,
-    };
+    return this.adminService.update(id, updateData);
   }
 
-  @ApiOperation({ summary: 'Delete an admin' })
-  @ApiResponse({
-    status: 200,
-    description: 'The admin was successfully deleted',
-    schema: {
-      example: {
-        status_code: 200,
-        message: 'success',
-        data: null,
-      },
-    },
-  })
-  @ApiResponse({ status: 404, description: 'Admin not found' })
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete an admin' })
+  @ApiOkResponse({
+    description: 'The admin has been successfully deleted.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found.',
+  })
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     await this.adminService.delete(id);
-    return {
-      status_code: HttpStatus.OK,
-      message: 'success',
-      data: null,
-    };
+    return { message: 'Admin successfully deleted.' };
   }
 
   @ApiResponse({

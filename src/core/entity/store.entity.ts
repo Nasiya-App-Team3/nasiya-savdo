@@ -11,6 +11,9 @@ export class Store extends BaseModel {
   login: string;
 
   @Column()
+  full_name: string;
+
+  @Column()
   hashed_password: string;
 
   @Column({ unique: true })

@@ -27,16 +27,21 @@ export class StoreController {
     description: 'Created store',
     schema: {
       example: {
-        login: 'Ali',
-        pin_code: 510,
-        phone_number: '+998121234577',
-        email: 'asd@asd.com',
-        id: '99cbf11a-352c-46d8-9862-d66d7e0edb8d',
-        created_at: '2025-01-23T14:53:14.185Z',
-        updated_at: '2025-01-23T14:53:14.185Z',
-        wallet: '0.00',
-        image: '',
-        is_active: true,
+        status_code: 200,
+        message: 'success',
+        data: {
+          login: 'Asadbek3',
+          full_name: 'Asadbek Zaynobiddinov',
+          email: 'asdbs@asd.com',
+          phone_number: '+998121234578',
+          pin_code: 510,
+          id: '42c77dbc-8651-487c-99c7-4756364b7762',
+          created_at: '2025-01-25T14:19:39.750Z',
+          updated_at: '2025-01-25T14:19:39.750Z',
+          wallet: '0.00',
+          image: '',
+          is_active: true,
+        },
       },
     },
   })
@@ -47,6 +52,18 @@ export class StoreController {
       example: {
         statusCode: 400,
         message: 'Validation error',
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Failed to create store',
+    schema: {
+      example: {
+        status_code: 400,
+        error: {
+          message: 'login already exist!',
+        },
       },
     },
   })
@@ -62,32 +79,32 @@ export class StoreController {
     status: HttpStatus.OK,
     description: 'Get All store',
     schema: {
-      example: [
-        {
-          login: 'Ali',
-          pin_code: 510,
-          phone_number: '+998121234577',
-          email: 'asd@asd.com',
-          id: '99cbf11a-352c-46d8-9862-d66d7e0edb8d',
-          created_at: '2025-01-23T14:53:14.185Z',
-          updated_at: '2025-01-23T14:53:14.185Z',
-          wallet: '0.00',
-          image: '',
-          is_active: true,
-        },
-        {
-          login: 'Ali',
-          pin_code: 510,
-          phone_number: '+998121234577',
-          email: 'asd@asd.com',
-          id: '99cbf11a-352c-46d8-9862-d66d7e0edb8d',
-          created_at: '2025-01-23T14:53:14.185Z',
-          updated_at: '2025-01-23T14:53:14.185Z',
-          wallet: '0.00',
-          image: '',
-          is_active: true,
-        },
-      ],
+      example: {
+        status_code: 200,
+        message: 'success',
+        data: [
+          {
+            id: '6b8413ab-84ad-4aa2-950f-09bb38cbc676',
+            created_at: '2025-01-25T13:36:03.045Z',
+            updated_at: '2025-01-25T13:36:03.045Z',
+            login: 'Asadbek',
+            wallet: '0.00',
+            image: '',
+            pin_code: 510,
+            is_active: true,
+          },
+          {
+            id: '42c77dbc-8651-487c-99c7-4756364b7762',
+            created_at: '2025-01-25T14:19:39.750Z',
+            updated_at: '2025-01-25T14:19:39.750Z',
+            login: 'Asadbek3',
+            wallet: '0.00',
+            image: '',
+            pin_code: 510,
+            is_active: true,
+          },
+        ],
+      },
     },
   })
   @ApiResponse({
@@ -111,19 +128,22 @@ export class StoreController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get oen store',
+    description: 'Get one store',
     schema: {
       example: {
-        login: 'Ali',
-        pin_code: 510,
-        phone_number: '+998121234577',
-        email: 'asd@asd.com',
-        id: '99cbf11a-352c-46d8-9862-d66d7e0edb8d',
-        created_at: '2025-01-23T14:53:14.185Z',
-        updated_at: '2025-01-23T14:53:14.185Z',
-        wallet: '0.00',
-        image: '',
-        is_active: true,
+        status_code: 200,
+        message: 'success',
+        data: {
+          id: '42c77dbc-8651-487c-99c7-4756364b7762',
+          created_at: '2025-01-25T14:19:39.750Z',
+          updated_at: '2025-01-25T14:22:58.559Z',
+          login: 'Asadbek3',
+          phone_number: '+998991234567',
+          wallet: '0.00',
+          image: '',
+          pin_code: 510,
+          is_active: true,
+        },
       },
     },
   })
@@ -151,16 +171,19 @@ export class StoreController {
     description: 'Update store',
     schema: {
       example: {
-        login: 'Ali',
-        pin_code: 510,
-        phone_number: '+998121234577',
-        email: 'asd@asd.com',
-        id: '99cbf11a-352c-46d8-9862-d66d7e0edb8d',
-        created_at: '2025-01-23T14:53:14.185Z',
-        updated_at: '2025-01-23T14:53:14.185Z',
-        wallet: '0.00',
-        image: '',
-        is_active: true,
+        status_code: 200,
+        message: 'success',
+        data: {
+          id: '42c77dbc-8651-487c-99c7-4756364b7762',
+          created_at: '2025-01-25T14:19:39.750Z',
+          updated_at: '2025-01-25T14:26:05.447Z',
+          login: 'Asadbek3',
+          phone_number: '+998991234567',
+          wallet: '0.00',
+          image: '',
+          pin_code: 510,
+          is_active: true,
+        },
       },
     },
   })

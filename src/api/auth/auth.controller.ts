@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpStatus,
   Post,
   Res,
@@ -17,12 +18,25 @@ import {
 import { Response } from 'express';
 import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
+
 import { TokenResponse } from 'src/common/interfaces';
+import { UserID } from 'src/common/decorator/user-id.decorator';
+
+class TokenResponse {
+  accessToken: string;
+  refreshToken: string;
+}
+
 
 @ApiTags('Auth')
+@ApiBearerAuth()
 @Controller('auth')
-export class authController {
+@UseGuards(AuthGuard)
+export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('login')
+  @ApiOperation({ summary: 'Admin login' })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Login or password not found!',
@@ -36,7 +50,6 @@ export class authController {
     description: 'Successful login',
     type: TokenResponse,
   })
-  @Post('login')
   login(
     @Body() authLoginDto: AuthLoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -44,10 +57,25 @@ export class authController {
     return this.authService.login(authLoginDto, res);
   }
 
+
   @ApiOperation({ summary: 'New access token for store' })
+
+  @Get('profile')
+  @ApiOperation({ summary: 'Get admin profile' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Get new access token success',
+    description: 'Admin profile fetched successfully',
+  })
+  findAll(@UserID() id: string) {
+    return this.authService.findOne(id);
+  }
+
+  @Post('refresh-token')
+  @ApiOperation({ summary: 'Generate new access token' })
+
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'New access token generated successfully',
     schema: {
       example: {
         status_code: 200,
@@ -61,7 +89,7 @@ export class authController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Fail new access token',
+    description: 'Failed to generate new access token',
     schema: {
       example: {
         status_code: 400,
@@ -69,15 +97,22 @@ export class authController {
       },
     },
   })
-  @Post('refresh-token')
   refreshToken(@CookieGetter('refresh_token_store') refresh_token: string) {
     return this.authService.refreshToken(refresh_token);
   }
+
 
   @ApiOperation({ summary: 'Logout store' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Store logged out success',
+
+  @Post('logout')
+  @ApiOperation({ summary: 'Logout admin' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Admin logged out successfully',
+
     schema: {
       example: {
         status_code: 200,
@@ -88,7 +123,7 @@ export class authController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'Fail on logging out store',
+    description: 'Failed to log out admin',
     schema: {
       example: {
         status_code: 400,
@@ -96,9 +131,6 @@ export class authController {
       },
     },
   })
-  @UseGuards(AuthGuard)
-  @Post('logout')
-  @ApiBearerAuth()
   logout(
     @CookieGetter('refresh_token_store') refresh_token: string,
     @Res({ passthrough: true }) res: Response,
