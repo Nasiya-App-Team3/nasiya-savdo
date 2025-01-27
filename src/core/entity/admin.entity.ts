@@ -13,6 +13,10 @@ export class Admin extends BaseModel {
   @Column()
   phone_number: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: AdminRoles,
+    default: AdminRoles.ADMIN,
+  })
   role: AdminRoles;
 }

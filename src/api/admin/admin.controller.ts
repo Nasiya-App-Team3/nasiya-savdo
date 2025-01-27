@@ -9,11 +9,10 @@ import {
   Put,
   UseGuards,
   HttpException,
+  Res,
   HttpStatus,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { CreateAdminDto, UpdateAdminDto } from './dto';
-import { AuthGuard } from '../../common/guard/jwt-auth.guard';
 import {
   ApiTags,
   ApiOperation,
@@ -22,6 +21,11 @@ import {
   ApiCreatedResponse,
   ApiOkResponse,
 } from '@nestjs/swagger';
+import { CreateAdminDto, UpdateAdminDto } from './dto';
+import { LoginAdminDto } from './dto/login-admin.dto';
+import { Response } from 'express';
+import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
+import { TokenResponse } from 'src/common/interfaces';
 
 @ApiTags('Admins')
 @ApiBearerAuth()
@@ -112,5 +116,85 @@ export class AdminController {
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     await this.adminService.delete(id);
     return { message: 'Admin successfully deleted.' };
+  }
+
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Login or password not found!',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'You are inactive. Call the store',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successful login',
+    type: TokenResponse,
+  })
+  @Post('login')
+  login(@Body() loginAdminDto: LoginAdminDto, @Res() res: Response) {
+    return this.adminService.login(loginAdminDto, res);
+  }
+
+  @ApiOperation({ summary: 'New access token for admin' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get new access token success',
+    schema: {
+      example: {
+        status_code: 200,
+        message: 'success',
+        data: {
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJpZCI6IjRkMGJ',
+          expire: '24h',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Fail new access token',
+    schema: {
+      example: {
+        status_code: 400,
+        message: 'Error on refresh token',
+      },
+    },
+  })
+  @Post('refresh-token')
+  refreshToken(@CookieGetter('refresh_token_store') refresh_token: string) {
+    return this.adminService.refreshToken(refresh_token);
+  }
+
+  @ApiOperation({ summary: 'Logout admin' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Admin logged out success',
+    schema: {
+      example: {
+        status_code: 200,
+        message: 'success',
+        data: {},
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Fail on logging out admin',
+    schema: {
+      example: {
+        status_code: 400,
+        message: 'Error on logout',
+      },
+    },
+  })
+  // @UseGuards(AuthGuard)
+  @Post('logout')
+  @ApiBearerAuth()
+  logout(
+    @CookieGetter('refresh_token_store') refresh_token: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminService.logout(refresh_token, res);
   }
 }

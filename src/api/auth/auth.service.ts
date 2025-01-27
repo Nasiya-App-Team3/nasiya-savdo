@@ -23,14 +23,14 @@ export class AuthService {
       authLoginDto.login,
     );
     if (!currentStore) {
-      throw new BadRequestException('login or password not found!');
+      throw new BadRequestException('login or password is wrong');
     }
     const isMatch = await this.bcryptManage.comparePassword(
       authLoginDto.hashed_password,
       currentStore.data.hashed_password,
     );
     if (!isMatch) {
-      throw new BadRequestException('login or password not found!');
+      throw new BadRequestException('login or password is wrong');
     }
     if (!currentStore.data.is_active) {
       throw new ForbiddenException(`You are inactive. Call the admin`);
