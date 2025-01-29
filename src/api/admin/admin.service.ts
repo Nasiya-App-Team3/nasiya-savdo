@@ -92,10 +92,10 @@ export class AdminService extends BaseService<
     });
     await this.writeToCookie(refreshToken, res);
 
-    return res.status(200).json({
+    return {
       accessToken,
       refreshToken,
-    });
+    };
   }
 
   async refreshToken(refreshToken: string) {

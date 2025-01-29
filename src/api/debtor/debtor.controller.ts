@@ -8,10 +8,8 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateDebtorDto } from './dto/create-debtor.dto';
-import { AuthGuard } from '../../common/guard/jwt-auth.guard';
 import { DebtorService } from './debtor.service';
 import { UserID } from 'src/common/decorator/user-id.decorator';
 import { UpdateDebtorDto } from './dto/update-debtor.dto';
@@ -29,7 +27,7 @@ import { ILike } from 'typeorm';
 
 @ApiTags('Debtor')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 @Controller('debtor')
 export class DebtorController {
   constructor(private readonly debtorService: DebtorService) {}

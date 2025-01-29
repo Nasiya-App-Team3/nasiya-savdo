@@ -10,6 +10,7 @@ import {
   HttpException,
   Res,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import {
@@ -25,6 +26,9 @@ import { LoginAdminDto } from './dto/login-admin.dto';
 import { Response } from 'express';
 import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { TokenResponse } from 'src/common/interfaces';
+import { Public } from 'src/common/decorator/public.decorator';
+import { SuperAdminGuard } from 'src/common/guard/super-admin.guard';
+import { AdminGuard } from 'src/common/guard/admin.guard';
 
 @ApiTags('Admins')
 @Controller('admins')
@@ -44,8 +48,12 @@ export class AdminController {
     description: 'Successful login',
     type: TokenResponse,
   })
+  @Public()
   @Post('signin')
-  async login(@Body() loginAdminDto: LoginAdminDto, @Res() res: Response) {
+  async login(
+    @Body() loginAdminDto: LoginAdminDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     return await this.adminService.login(loginAdminDto, res);
   }
 
@@ -59,6 +67,8 @@ export class AdminController {
     description: 'The admin has been successfully created.',
     type: CreateAdminDto,
   })
+  @ApiBearerAuth()
+  @UseGuards(SuperAdminGuard)
   async create(@Body() adminData: CreateAdminDto): Promise<any> {
     try {
       return this.adminService.create(adminData);
@@ -70,6 +80,8 @@ export class AdminController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
   @Get()
   @ApiOperation({ summary: 'Get all admins' })
   @ApiOkResponse({
@@ -90,6 +102,8 @@ export class AdminController {
     status: 404,
     description: 'Admin not found.',
   })
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     const data = await this.adminService.findOneById(id);
     if (!data) {
@@ -98,6 +112,8 @@ export class AdminController {
     return data;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
   @Put(':id')
   @ApiOperation({ summary: 'Update admin data' })
   @ApiOkResponse({
@@ -119,6 +135,8 @@ export class AdminController {
     return this.adminService.update(id, updateData);
   }
 
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'Delete an admin' })
   @ApiOkResponse({
@@ -158,6 +176,7 @@ export class AdminController {
       },
     },
   })
+  @Public()
   @Post('refresh-token')
   refreshToken(@CookieGetter('refresh_token_store') refresh_token: string) {
     return this.adminService.refreshToken(refresh_token);

@@ -15,6 +15,8 @@ import { ImagesOfDebtsModule } from './images_of_debts/images_of_debts.module';
 import { ImagesOfDebtorsModule } from './images_of_debtors/images_of_debtors.module';
 import { UploadModule } from './upload/upload.module';
 import { SetupModule } from './setup/setup.module';
+import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -43,6 +45,12 @@ import { SetupModule } from './setup/setup.module';
     ImagesOfDebtorsModule,
     UploadModule,
     SetupModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Put,
@@ -13,8 +12,14 @@ import {
 } from '@nestjs/common';
 import { ImagesOfDebtsService } from './images_of_debts.service';
 import { CreateImagesOfDebtDto, UpdateImagesOfDebtDto } from './dto/index';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @ApiTags('Images_of_the_debts ')
 @Controller('images-of-debts')
 export class ImagesOfDebtsController {

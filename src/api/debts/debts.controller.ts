@@ -16,11 +16,13 @@ import {
   ApiParam,
   ApiBody,
   ApiQuery,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { DebtDto } from './dto/createDebt-dto';
 import { DebtsService } from './debts.service';
 import { UpdateDebtDto } from './dto/updateDebt-dto';
 
+@ApiBearerAuth()
 @ApiTags('Debts')
 @Controller('debts')
 export class DebtsController {

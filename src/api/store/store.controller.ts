@@ -8,13 +8,22 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateStoresDto } from './dto/create-store.dto';
 import { StoreService } from './store.service';
 import { UpdateStoresDto } from './dto/update-store.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AdminGuard } from 'src/common/guard/admin.guard';
 
+@ApiBearerAuth()
 @ApiTags('Store API')
+@UseGuards(AdminGuard)
 @Controller('store')
 export class StoreController {
   constructor(private readonly storesService: StoreService) {}

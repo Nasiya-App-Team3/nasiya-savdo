@@ -7,7 +7,6 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -19,12 +18,10 @@ import {
 import { MessagesService } from './messages.service';
 import { CreateMessagesDto } from './dto/create-messages.dto';
 import { UpdateMessagesDto } from './dto/update-messages.dto';
-import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { UserID } from 'src/common/decorator/user-id.decorator';
 
 @ApiTags('Messages')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
 @Controller('messages')
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}

@@ -12,8 +12,14 @@ import {
 } from '@nestjs/common';
 import { ImagesOfDebtorsService } from './images_of_debtors.service';
 import { CreateImagesOfDebtorDto, UpdateImagesOfDebtorDto } from './dto/index';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @ApiTags('Images_of_debtors')
 @Controller('images-of-debtors')
 export class ImagesOfDebtorsController {

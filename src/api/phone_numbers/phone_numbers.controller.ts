@@ -14,11 +14,13 @@ import {
   ApiResponse,
   ApiParam,
   ApiBody,
+  ApiBearerAuth,
 } from '@nestjs/swagger';
 import { PhoneNumberDto } from './dto/create-phone.dto';
 import { UpdatePhoneNumberDto } from './dto/update-phone.sto';
 import { PhoneNumbersService } from './phone_numbers.service';
 
+@ApiBearerAuth()
 @ApiTags('Phone Numbers Of Debtors')
 @Controller('phone-numbers')
 export class PhoneNumbersController {

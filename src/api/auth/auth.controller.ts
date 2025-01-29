@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Post,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthService } from './auth.service';
 import {
@@ -17,16 +9,16 @@ import {
 } from '@nestjs/swagger';
 import { Response } from 'express';
 import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
-import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { TokenResponse } from 'src/common/interfaces';
 import { UserID } from 'src/common/decorator/user-id.decorator';
+import { Public } from 'src/common/decorator/public.decorator';
 
 @ApiTags('Auth')
-@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('login')
   @ApiOperation({ summary: 'Admin login' })
   @ApiResponse({
@@ -56,11 +48,13 @@ export class AuthController {
     status: HttpStatus.OK,
     description: 'Admin profile fetched successfully',
   })
-  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
   profile(@UserID() id: string) {
     return this.authService.findOne(id);
   }
 
+  @Public()
   @Post('refresh-token')
   @ApiOperation({ summary: 'Generate new access token' })
   @ApiResponse({
@@ -120,6 +114,8 @@ export class AuthController {
       },
     },
   })
+  @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
   logout(
     @CookieGetter('refresh_token_store') refresh_token: string,
     @Res({ passthrough: true }) res: Response,
