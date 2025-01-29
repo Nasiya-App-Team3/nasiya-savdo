@@ -41,7 +41,7 @@ export class SetupService {
       username: 'admin',
       hashed_password,
       phone_number: '+998912345679',
-      role: AdminRoles.SUPERADMIN,
+      role: AdminRoles.ADMIN,
     });
 
     const newStore1 = this.storeRepo.create({
