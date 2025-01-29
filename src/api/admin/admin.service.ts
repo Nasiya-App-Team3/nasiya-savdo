@@ -59,48 +59,43 @@ export class AdminService extends BaseService<
   }
 
   async login(loginAdminDto: LoginAdminDto, res: Response) {
-    try {
-      const currentAdmin = await this.getRepository.findOne({
-        where: { username: loginAdminDto.username },
-      });
-
-      if (!currentAdmin) {
-        throw new NotFoundException('username or password is wrong');
-      }
-
-      const isMatch = await this.bcryptManage.comparePassword(
-        loginAdminDto.hashed_password,
-        currentAdmin.hashed_password,
-      );
-      if (!isMatch) {
-        throw new NotFoundException('username or password is wrong');
-      }
-
-      const payload: IAdminPayload = {
-        sub: currentAdmin.id,
-        username: currentAdmin.username,
-        role: currentAdmin.role,
-      };
-
-      const accessToken = this.jwtService.sign(payload, {
-        secret: config.ACCESS_TOKEN_KEY,
-        expiresIn: config.ACCESS_TOKEN_TIME,
-      });
-
-      const refreshToken = this.jwtService.sign(payload, {
-        secret: config.REFRESH_TOKEN_KEY,
-        expiresIn: config.REFRESH_TOKEN_TIME,
-      });
-
-      await this.writeToCookie(refreshToken, res);
-
-      return {
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
-      console.error(error);
+    const currentAdmin = await this.getRepository.findOne({
+      where: { username: loginAdminDto.username },
+    });
+    if (!currentAdmin) {
+      throw new NotFoundException('username or password is wrong');
     }
+
+    const isMatch = await this.bcryptManage.comparePassword(
+      loginAdminDto.hashed_password,
+      currentAdmin.hashed_password,
+    );
+    console.log(isMatch);
+    if (!isMatch) {
+      throw new NotFoundException('username or password is wrong');
+    }
+
+    const payload: IAdminPayload = {
+      sub: currentAdmin.id,
+      username: currentAdmin.username,
+      role: currentAdmin.role,
+    };
+
+    const accessToken = await this.jwtService.sign(payload, {
+      secret: config.ACCESS_TOKEN_KEY,
+      expiresIn: config.ACCESS_TOKEN_TIME,
+    });
+
+    const refreshToken = await this.jwtService.sign(payload, {
+      secret: config.REFRESH_TOKEN_KEY,
+      expiresIn: config.REFRESH_TOKEN_TIME,
+    });
+    await this.writeToCookie(refreshToken, res);
+
+    return res.status(200).json({
+      accessToken,
+      refreshToken,
+    });
   }
 
   async refreshToken(refreshToken: string) {
