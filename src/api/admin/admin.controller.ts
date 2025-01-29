@@ -31,6 +31,24 @@ import { TokenResponse } from 'src/common/interfaces';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Login or password not found!',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'You are inactive. Call the store',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successful login',
+    type: TokenResponse,
+  })
+  @Post('signin')
+  async login(@Body() loginAdminDto: LoginAdminDto, @Res() res: Response) {
+    return await this.adminService.login(loginAdminDto, res);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create a new admin' })
   @ApiResponse({
@@ -113,24 +131,6 @@ export class AdminController {
   async delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
     await this.adminService.delete(id);
     return { message: 'Admin successfully deleted.' };
-  }
-
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Login or password not found!',
-  })
-  @ApiResponse({
-    status: HttpStatus.FORBIDDEN,
-    description: 'You are inactive. Call the store',
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Successful login',
-    type: TokenResponse,
-  })
-  @Post('login')
-  login(@Body() loginAdminDto: LoginAdminDto, @Res() res: Response) {
-    return this.adminService.login(loginAdminDto, res);
   }
 
   @ApiOperation({ summary: 'New access token for admin' })
