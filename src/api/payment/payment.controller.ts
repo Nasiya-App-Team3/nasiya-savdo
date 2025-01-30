@@ -229,8 +229,8 @@ export class PaymentController {
   //   return this.paymentService.forMonth(forMonthPayment);
   // }
 
-  // @Post('for/any/sum')
-  // async forAnySum(@Body() forAnySumPayment: CreatePaymentDto) {
-  //   return this.paymentService.forAnySum(forAnySumPayment);
-  // }
+  @Post('for_any_sum')
+  async forAnySum(@Body() forAnySumPayment: CreatePaymentDto) {
+    return this.paymentService.forAnySum(forAnySumPayment);
+  }
 }

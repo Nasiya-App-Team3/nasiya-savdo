@@ -10,7 +10,8 @@ import {
   ArrayMinSize,
   ArrayMaxSize,
 } from 'class-validator';
-import { DebtPeriod } from 'src/common/enum';
+import { DebtPeriod } from 'src/common/enum'; // Enum joyi
+import { DebtStatus } from 'src/common/enum'; // DebtStatus enumi
 
 export class DebtDto {
   @ApiProperty({
@@ -40,8 +41,13 @@ export class DebtDto {
   @IsDecimal({ decimal_digits: '2', force_decimal: false })
   debt_sum: number;
 
+  @ApiProperty({
+    description: 'The total debt amount',
+    example: 10000,
+    required: false,
+  })
   @IsOptional()
-  total_debt_sum: number;
+  total_debt_sum?: number;
 
   @ApiProperty({
     description: 'A description of the debt',
@@ -55,7 +61,11 @@ export class DebtDto {
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(2)
-  images: string[];
+  @ApiProperty({
+    description: 'Images of the debt',
+    example: [{ image: 'image-url-1' }, { image: 'image-url-2' }],
+  })
+  images: { image: string }[];
 
   @ApiProperty({
     description: 'The ID of the debtor',
@@ -70,6 +80,6 @@ export class DebtDto {
     required: false,
   })
   @IsOptional()
-  @IsString()
-  debt_status?: string;
+  @IsEnum(DebtStatus)
+  debt_status?: DebtStatus;
 }
