@@ -9,10 +9,12 @@ import {
   Post,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CreateStoresDto } from './dto/create-store.dto';
 import { StoreService } from './store.service';
 import { UpdateStoresDto } from './dto/update-store.dto';
+import { UserID } from 'src/common/decorator/user-id.decorator';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -130,6 +132,19 @@ export class StoreController {
   @Get()
   findAll() {
     return this.storesService.findAll();
+  }
+
+  @Get('get-store-debts')
+  getStoreDebts(
+    @UserID() id: string,
+    @Query() date: { start_date: Date; end_date: Date },
+  ) {
+    return this.storesService.findStoreByDate(id, date);
+  }
+
+  @Get('one-day-debts')
+  getOneDebts(@UserID() id: string, @Query('date') date: Date) {
+    return this.storesService.findStoreByDateOne(id, date);
   }
 
   @ApiOperation({

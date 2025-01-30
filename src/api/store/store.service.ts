@@ -51,6 +51,75 @@ export class StoreService {
     };
   }
 
+  async findStoreByDate(
+    id: string,
+    data: { start_date: Date; end_date: Date },
+  ): Promise<{
+    status_code: number;
+    message: string;
+    data: string;
+  }> {
+    if (!data?.start_date && !data?.end_date) {
+      throw new Error('Date is required!');
+    }
+
+    const startDate = new Date(data.start_date);
+    const endDate = new Date(data.end_date);
+
+    const totalDebtSum = await this.repository
+      .createQueryBuilder('store')
+      .leftJoinAndSelect('store.debtors', 'debtor')
+      .leftJoinAndSelect('debtor.debts', 'debt')
+      .select('SUM(debt.debt_sum)', 'totalStoreDebt')
+      .where('store.id = :id', { id })
+      .andWhere('DATE(debt.next_payment_date) >= DATE(:startDate)', {
+        startDate,
+      })
+      .andWhere('DATE(debt.next_payment_date) <= DATE(:endDate)', { endDate })
+      .getRawOne();
+    if (!totalDebtSum) {
+      throw new NotFoundException('not found!');
+    }
+    return {
+      status_code: 200,
+      message: 'success',
+      data: totalDebtSum,
+    };
+  }
+
+  async findStoreByDateOne(
+    id: string,
+    datas: Date,
+  ): Promise<{
+    status_code: number;
+    message: string;
+    data: any;
+  }> {
+    if (!datas) {
+      throw new Error('Date is required!');
+    }
+
+    const oneDate = new Date(datas);
+
+    const totalDebtSum = await this.repository
+      .createQueryBuilder('store')
+      .leftJoinAndSelect('store.debtors', 'debtor')
+      .leftJoinAndSelect('debtor.debts', 'debt')
+      .select('debt.debt_sum, debtor.full_name', 'totalStoreDebt')
+      .where('store.id = :id', { id })
+      .andWhere('DATE(debt.next_payment_date) = DATE(:oneDate)', { oneDate })
+      .getRawMany();
+
+    if (totalDebtSum.length === 0) {
+      throw new NotFoundException('not found!');
+    }
+    return {
+      status_code: 200,
+      message: 'success',
+      data: totalDebtSum,
+    };
+  }
+
   async findAll(): Promise<{
     status_code: number;
     message: string;
@@ -161,4 +230,6 @@ export class StoreService {
       };
     }
   }
+
+  // async query(query){}
 }

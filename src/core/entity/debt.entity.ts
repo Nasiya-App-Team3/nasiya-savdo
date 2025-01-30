@@ -1,40 +1,28 @@
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  BeforeInsert,
-  BeforeUpdate,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseModel } from '../../common/database/index';
 import { Debtor } from './debtor.entity';
-import { DebtPeriod } from '../../common/enum/index';
+import { DebtPeriod, DebtStatus } from '../../common/enum/index';
 import { Payments } from './payment.entity';
 import { ImagesOfDebts } from './images-of-debts.entity';
 
 @Entity({ name: 'debts' })
 export class Debt extends BaseModel {
-  @Column()
-  debt_date: Date;
-
-  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
+  @Column({
+    type: 'date',
+  })
   next_payment_date: Date;
 
-  @BeforeInsert()
-  @BeforeUpdate()
-  setNextPaymentDate() {
-    if (this.debt_date) {
-      const nextPaymentDate = new Date(this.debt_date);
-      nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
-      this.next_payment_date = nextPaymentDate;
-    }
-  }
+  @Column({ type: 'enum', enum: DebtStatus, default: DebtStatus.ACTIVE })
+  debt_status: DebtStatus;
 
   @Column()
   debt_period: DebtPeriod;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   debt_sum: number;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+  total_debt_sum: number;
 
   @Column()
   description: string;

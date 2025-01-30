@@ -18,17 +18,4 @@ export class PaymentService extends BaseService<
   ) {
     super(repository);
   }
-
-  async create(dto: CreatePaymentDto) {
-    await this.debtsService.findOneById(dto.debtId);
-    let created_data = this.getRepository.create({
-      ...dto,
-    }) as unknown as Payments;
-    created_data = await this.getRepository.save(created_data);
-    return {
-      status_code: 201,
-      message: 'success',
-      data: created_data,
-    };
-  }
 }
