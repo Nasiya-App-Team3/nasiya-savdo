@@ -12,3 +12,8 @@ export enum DebtPeriod {
   MONTH11 = 11,
   MONTH12 = 12,
 }
+
+export enum DebtStatus {
+  ACTIVE = 'active',
+  CLOSED = 'closed',
+}

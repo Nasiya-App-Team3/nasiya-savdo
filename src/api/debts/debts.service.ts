@@ -25,18 +25,26 @@ export class DebtsService extends BaseService<DebtDto, DeepPartial<Debt>> {
     const { images, ...createDebtsDto } = dto;
     const queryRunner =
       this.getRepository.manager.connection.createQueryRunner();
+
+    await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
       const newDebt = this.getRepository.create(createDebtsDto);
+      newDebt.total_debt_sum = newDebt.debt_sum;
+      newDebt.next_payment_date = new Date();
+      newDebt.next_payment_date.setMonth(
+        newDebt.next_payment_date.getMonth() + 1,
+      );
+
       await queryRunner.manager.save(newDebt);
 
       for (const image of images) {
-        const newPhone = this.imagesOfDebts.getRepository.create({
+        const newImage = this.imagesOfDebts.getRepository.create({
           debt: { id: newDebt.id },
           image: image,
         });
-        await queryRunner.manager.save(newPhone);
+        await queryRunner.manager.save(newImage);
       }
 
       await queryRunner.commitTransaction();
@@ -53,23 +61,4 @@ export class DebtsService extends BaseService<DebtDto, DeepPartial<Debt>> {
       await queryRunner.release();
     }
   }
-  // async findAll(options?: IFindOptions<DeepPartial<Debt>>): Promise<{
-  //   status_code: number;
-  //   message: string;
-  //   data: DeepPartial<Debt>[];
-  // }> {
-  //   const allDebts = await this.getRepository.find({
-  //     relations: {
-  //       images: true,
-  //     },
-  //     select: {
-  //       images: true,
-  //     },
-  //   });
-  //   return {
-  //     status_code: 200,
-  //     message: 'success',
-  //     data: allDebts,
-  //   };
-  // }
 }

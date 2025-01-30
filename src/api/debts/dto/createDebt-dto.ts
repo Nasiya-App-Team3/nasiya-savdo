@@ -14,12 +14,13 @@ import { DebtPeriod } from 'src/common/enum';
 
 export class DebtDto {
   @ApiProperty({
-    description: 'The date when the debt was created',
-    example: '2025-01-22',
+    description: 'The next payment date',
+    example: '2025-02-22',
+    required: false,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  debt_date: string;
+  next_payment_date?: Date;
 
   @ApiProperty({
     description: 'The payment period for the debt',
@@ -38,6 +39,9 @@ export class DebtDto {
   @IsNotEmpty()
   @IsDecimal({ decimal_digits: '2', force_decimal: false })
   debt_sum: number;
+
+  @IsOptional()
+  total_debt_sum: number;
 
   @ApiProperty({
     description: 'A description of the debt',
@@ -59,4 +63,13 @@ export class DebtDto {
   })
   @IsNotEmpty()
   debtor: string;
+
+  @ApiProperty({
+    description: 'The status of the debt',
+    example: 'active',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  debt_status?: string;
 }
