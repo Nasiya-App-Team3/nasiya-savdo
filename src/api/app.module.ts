@@ -15,9 +15,17 @@ import { ImagesOfDebtsModule } from './images_of_debts/images_of_debts.module';
 import { ImagesOfDebtorsModule } from './images_of_debtors/images_of_debtors.module';
 import { UploadModule } from './upload/upload.module';
 import { SetupModule } from './setup/setup.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60,
+        limit: 10,
+      },
+    ]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: config.DB_HOST,
@@ -43,6 +51,12 @@ import { SetupModule } from './setup/setup.module';
     ImagesOfDebtorsModule,
     UploadModule,
     SetupModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
