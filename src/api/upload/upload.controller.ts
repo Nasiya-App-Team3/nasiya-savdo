@@ -43,7 +43,7 @@ export class UploadController {
     },
   })
   @UseInterceptors(
-    FilesInterceptor('files', 2, {
+    FilesInterceptor('files', 10, {
       storage: diskStorage({
         destination: './uploads',
         filename: (req, file, callback) => {
@@ -70,7 +70,6 @@ export class UploadController {
     }),
   )
   uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
-    console.log(files);
     return files.map((file) => ({
       originalname: file.originalname,
       filename: file.filename,
