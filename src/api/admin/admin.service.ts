@@ -70,7 +70,6 @@ export class AdminService extends BaseService<
       loginAdminDto.hashed_password,
       currentAdmin.hashed_password,
     );
-    console.log(isMatch);
     if (!isMatch) {
       throw new NotFoundException('username or password is wrong');
     }

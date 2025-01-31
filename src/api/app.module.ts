@@ -53,7 +53,7 @@ import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
   ],
   providers: [
     {
-      provide: AuthGuard,
+      provide: APP_GUARD,
       useClass: AuthGuard,
     },
     {

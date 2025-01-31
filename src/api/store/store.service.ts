@@ -65,33 +65,35 @@ export class StoreService {
   ): Promise<{
     status_code: number;
     message: string;
-    data: string;
+    data: any;
   }> {
     if (!data?.start_date && !data?.end_date) {
       throw new Error('Date is required!');
     }
-
-    const startDate = new Date(data.start_date);
-    const endDate = new Date(data.end_date);
-
     const totalDebtSum = await this.repository
       .createQueryBuilder('store')
       .leftJoinAndSelect('store.debtors', 'debtor')
       .leftJoinAndSelect('debtor.debts', 'debt')
-      .select('SUM(debt.debt_sum)', 'totalStoreDebt')
+      .select('debt.total_debt_sum, debt.total_month', 'total_month')
       .where('store.id = :id', { id })
       .andWhere('DATE(debt.next_payment_date) >= DATE(:startDate)', {
-        startDate,
+        startDate: data.start_date,
       })
-      .andWhere('DATE(debt.next_payment_date) <= DATE(:endDate)', { endDate })
-      .getRawOne();
-    if (!totalDebtSum) {
+      .andWhere('DATE(debt.next_payment_date) <= DATE(:endDate)', {
+        endDate: data.end_date,
+      })
+      .getRawMany();
+    if (!totalDebtSum || totalDebtSum.length === 0) {
       throw new NotFoundException('not found!');
     }
+    let totalOneMonthDebt = 0;
+    totalDebtSum.forEach((element) => {
+      totalOneMonthDebt += +element.total_debt_sum / element.total_month;
+    });
     return {
       status_code: 200,
       message: 'success',
-      data: totalDebtSum,
+      data: totalOneMonthDebt.toFixed(2),
     };
   }
 
@@ -101,29 +103,34 @@ export class StoreService {
   ): Promise<{
     status_code: number;
     message: string;
+    total_day_debt: string;
     data: any;
   }> {
     if (!datas) {
       throw new Error('Date is required!');
     }
-
-    const oneDate = new Date(datas);
-
     const totalDebtSum = await this.repository
       .createQueryBuilder('store')
       .leftJoinAndSelect('store.debtors', 'debtor')
       .leftJoinAndSelect('debtor.debts', 'debt')
-      .select('debt.debt_sum, debtor.full_name', 'totalStoreDebt')
+      .select('debt.total_debt_sum, total_month, debtor.full_name')
       .where('store.id = :id', { id })
-      .andWhere('DATE(debt.next_payment_date) = DATE(:oneDate)', { oneDate })
+      .andWhere('DATE(debt.next_payment_date) = DATE(:oneDate)', {
+        oneDate: datas,
+      })
       .getRawMany();
 
-    if (totalDebtSum.length === 0) {
+    if (!totalDebtSum || totalDebtSum.length === 0) {
       throw new NotFoundException('not found!');
     }
+    let totalOnedayDebt = 0;
+    totalDebtSum.forEach((element) => {
+      totalOnedayDebt += +element.total_debt_sum / element.total_month;
+    });
     return {
       status_code: 200,
       message: 'success',
+      total_day_debt: totalOnedayDebt.toFixed(2),
       data: totalDebtSum,
     };
   }
@@ -312,7 +319,6 @@ export class StoreService {
         .where('store.id = :id', { id })
         .select('store.image', 'image')
         .getRawOne();
-
       return {
         code_status: 200,
         message: 'success',

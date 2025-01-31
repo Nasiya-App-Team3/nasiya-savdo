@@ -27,55 +27,6 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @ApiOperation({
-    summary: 'Create Payment',
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Created Payment',
-    schema: {
-      example: {
-        status_code: 201,
-        message: 'success',
-        data: {
-          sum: 500,
-          type: 'one_month',
-          id: 'f17c8dab-0058-4202-91d1-77ebf989ecd1',
-          created_at: '2025-01-24T09:25:43.175Z',
-          updated_at: '2025-01-24T09:25:43.175Z',
-          date: '2025-01-24',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Failed to Validate UUID',
-    schema: {
-      example: {
-        message: ['debtId must be a UUID'],
-        error: 'Bad Request',
-        statusCode: 400,
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Failed to Validation',
-    schema: {
-      example: {
-        message:
-          'Unexpected token \',\', ..."   "sum": ,\n    "typ"... is not valid JSON',
-        error: 'Bad Request',
-        statusCode: 400,
-      },
-    },
-  })
-  @Post()
-  create(@Body() createPaymentDto: CreatePaymentDto) {
-    return this.paymentService.create(createPaymentDto);
-  }
-
-  @ApiOperation({
     summary: 'Find All Payments',
   })
   @ApiResponse({
