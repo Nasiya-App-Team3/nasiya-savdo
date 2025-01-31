@@ -37,8 +37,15 @@ export class PaymentService extends BaseService<
       throw new BadRequestException('Debt Is Closed');
     }
 
+    const queryRunner =
+      this.getRepository.manager.connection.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
       const newPayment = this.getRepository.create(dto);
+
       if (+currentDebt.data.debt_sum <= newPayment.sum) {
         currentDebt.data.debt_sum = 0;
         currentDebt.data.debt_status = DebtStatus.CLOSED;
@@ -47,7 +54,6 @@ export class PaymentService extends BaseService<
 
         const monthlyPayment =
           currentDebt.data.total_debt_sum / currentDebt.data.debt_period;
-
         let nextPaymentDate = new Date(
           currentDebt.data.next_payment_date as string,
         );
@@ -84,9 +90,14 @@ export class PaymentService extends BaseService<
           .split('T')[0];
       }
 
-      console.log({ debt: currentDebt.data });
-      await this.getRepository.save(newPayment);
-      await this.debtRepo.update(currentDebt.data.id, currentDebt.data);
+      await queryRunner.manager.save(newPayment);
+      await queryRunner.manager.update(
+        this.debtRepo.target,
+        currentDebt.data.id,
+        currentDebt.data,
+      );
+
+      await queryRunner.commitTransaction();
 
       return {
         status_code: 201,
@@ -94,8 +105,11 @@ export class PaymentService extends BaseService<
         data: newPayment,
       };
     } catch (error) {
-      console.log(error);
+      await queryRunner.rollbackTransaction();
+      console.error(error);
       throw new BadRequestException('Transaction Failed');
+    } finally {
+      await queryRunner.release();
     }
   }
 }
