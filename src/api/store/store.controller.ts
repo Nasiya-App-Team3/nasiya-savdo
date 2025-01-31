@@ -22,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AdminGuard } from 'src/common/guard/admin.guard';
+import { SelfGuard } from 'src/common/guard/self.guard';
 
 @ApiBearerAuth()
 @ApiTags('Store API')
@@ -129,11 +130,13 @@ export class StoreController {
       },
     },
   })
+  @UseGuards(AdminGuard)
   @Get()
   findAll() {
     return this.storesService.findAll();
   }
 
+  // @UseGuards(SelfGuard)
   @Get('get-store-debts')
   getStoreDebts(
     @UserID() id: string,
@@ -163,6 +166,7 @@ export class StoreController {
   //   return this.storesService.getLateDebtsCountByStore(storeId);
   // }
 
+  // @UseGuards(SelfGuard)
   @Get('statistics')
   statistics(@UserID() id: string) {
     return this.storesService.storeStatistics(id);
@@ -255,6 +259,7 @@ export class StoreController {
       },
     },
   })
+  @UseGuards(SelfGuard)
   @Put(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
