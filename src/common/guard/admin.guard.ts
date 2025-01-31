@@ -11,13 +11,12 @@ export class AdminGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
     if (
-      !req.user?.role ||
-      req.user?.role !== AdminRoles.ADMIN ||
-      req.user?.role !== AdminRoles.SUPERADMIN
+      req.user?.role == AdminRoles.ADMIN ||
+      req.user?.role == AdminRoles.SUPERADMIN
     ) {
-      throw new ForbiddenException('Forbidden user');
-    } else {
       return true;
+    } else {
+      throw new ForbiddenException('Forbidden user');
     }
   }
 }

@@ -5,8 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateStoresDto } from './dto/create-store.dto';
-import { Store } from '../../core/entity';
-import { StoreRepository } from '../../core/repository/index';
+import { Debt, Debtor, Store } from '../../core/entity';
+import {
+  DebtorRepository,
+  DebtRepository,
+  StoreRepository,
+} from '../../core/repository/index';
 import { BcryptManage } from '../../infrastructure/lib/bcrypt/index';
 import { UpdateStoresDto } from './dto/update-store.dto';
 
@@ -14,12 +18,15 @@ import { UpdateStoresDto } from './dto/update-store.dto';
 export class StoreService {
   constructor(
     @InjectRepository(Store) private readonly repository: StoreRepository,
+    @InjectRepository(Debtor)
+    private readonly debtorRepository: DebtorRepository,
+    @InjectRepository(Debt) private readonly debtRepository: DebtRepository,
     private readonly manageBcrypt: BcryptManage,
   ) {}
   async create(cerateStoreDto: CreateStoresDto): Promise<{
     status_code: number;
     message: string;
-    data: Omit<Store, 'hashed_password'> | {};
+    data: Omit<Store, 'hashed_password'>;
   }> {
     const storeLogin = await this.repository.findOne({
       where: { login: cerateStoreDto.login },
@@ -41,7 +48,8 @@ export class StoreService {
       cerateStoreDto.hashed_password,
     );
     cerateStoreDto.hashed_password = hashPassword;
-    let create_store = await this.repository.create(cerateStoreDto);
+    const create_store = this.repository.create(cerateStoreDto);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { hashed_password, ...newStore } =
       await this.repository.save(create_store);
     return {
@@ -209,7 +217,7 @@ export class StoreService {
   async remove(id: string): Promise<{
     status_code: number;
     message: string;
-    data: {};
+    data: any;
   }> {
     const storeData = await this.findOne(id);
     if (!storeData) {
@@ -231,5 +239,92 @@ export class StoreService {
     }
   }
 
-  // async query(query){}
+  // async getTotalSumOfStore(storeId: string): Promise<object> {
+  //   const totalDebt = await this.debtorRepository
+  //     .createQueryBuilder('debtor')
+  //     .leftJoin('debtor.debts', 'debt')
+  //     .where('debtor.storeId = :storeId', { storeId })
+  //     .select('SUM(debt.debt_sum)', 'total')
+  //     .getRawOne();
+
+  //   return {
+  //     code_status: 200,
+  //     message: 'success',
+  //     data: Number(totalDebt.total) || 0,
+  //   };
+  // }
+
+  // async getDebtorsCountByStore(storeId: string): Promise<object> {
+  //   const debtorCount = await this.debtorRepository
+  //     .createQueryBuilder('debtor')
+  //     .where('debtor.storeId = :storeId', { storeId })
+  //     .getCount();
+
+  //   return {
+  //     code_status: 200,
+  //     message: 'success',
+  //     data: debtorCount,
+  //   };
+  // }
+
+  // async getLateDebtsCountByStore(storeId: string): Promise<object> {
+  //   const currentDate = new Date();
+
+  //   const lateDebtsCount = await this.debtRepository
+  //     .createQueryBuilder('debt')
+  //     .leftJoin('debt.debtor', 'debtor')
+  //     .where('debtor.storeId = :storeId', { storeId })
+  //     .andWhere('debt.next_payment_date < :currentDate', { currentDate })
+  //     .getCount();
+
+  //   return {
+  //     code_status: 200,
+  //     message: 'success',
+  //     data: { 'total late debts count': lateDebtsCount },
+  //   };
+  // }
+
+  async storeStatistics(id: string) {
+    try {
+      const totalDebt = await this.debtorRepository
+        .createQueryBuilder('debtor')
+        .leftJoin('debtor.debts', 'debt')
+        .where('debtor.storeId = :id', { id })
+        .select('COALESCE(SUM(debt.debt_sum), 0)', 'total')
+        .getRawOne();
+
+      const debtorCount = await this.debtorRepository
+        .createQueryBuilder('debtor')
+        .where('debtor.storeId = :id', { id })
+        .getCount();
+
+      const currentDate = new Date();
+
+      const lateDebtsCount = await this.debtRepository
+        .createQueryBuilder('debt')
+        .leftJoin('debt.debtor', 'debtor')
+        .where('debtor.storeId = :id', { id })
+        .andWhere('debt.next_payment_date < :currentDate', { currentDate })
+        .getCount();
+
+      const image = await this.repository
+        .createQueryBuilder('store')
+        .where('store.id = :id', { id })
+        .select('store.image', 'image')
+        .getRawOne();
+
+      return {
+        code_status: 200,
+        message: 'success',
+        data: {
+          image: image.image,
+          totalDebt: totalDebt.total,
+          debtorCount,
+          lateDebtsCount,
+        },
+      };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }

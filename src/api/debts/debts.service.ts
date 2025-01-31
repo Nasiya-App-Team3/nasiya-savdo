@@ -32,6 +32,7 @@ export class DebtsService extends BaseService<DebtDto, DeepPartial<Debt>> {
     try {
       const newDebt = this.getRepository.create(createDebtsDto);
       newDebt.total_debt_sum = newDebt.debt_sum;
+      newDebt.total_month = newDebt.debt_period;
       newDebt.next_payment_date = new Date();
       newDebt.next_payment_date.setMonth(
         newDebt.next_payment_date.getMonth() + 1,

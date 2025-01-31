@@ -7,9 +7,13 @@ import { ImagesOfDebts } from './images-of-debts.entity';
 
 @Entity({ name: 'debts' })
 export class Debt extends BaseModel {
-  @Column({
-    type: 'date',
-  })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
+  total_debt_sum: number;
+
+  @Column()
+  total_month: DebtPeriod;
+
+  @Column({ type: 'date' })
   next_payment_date: Date;
 
   @Column({ type: 'enum', enum: DebtStatus, default: DebtStatus.ACTIVE })
@@ -20,9 +24,6 @@ export class Debt extends BaseModel {
 
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   debt_sum: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
-  total_debt_sum: number;
 
   @Column()
   description: string;

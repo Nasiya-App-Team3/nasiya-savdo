@@ -25,7 +25,7 @@ export class Store extends BaseModel {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: '0.00' })
   wallet: number;
 
-  @Column({ default: '' })
+  @Column({ nullable: true })
   image: string;
 
   @Column()

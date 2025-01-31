@@ -224,7 +224,7 @@ export class PaymentController {
   @Post('for-month')
   async forMonth(
     @Body() forMonthPayment: CreatePaymentDto,
-    @Query() query: any, // month count come from query. its name is monthCount
+    @Query() query: any,
   ) {
     return this.paymentService.forMonth(forMonthPayment, query);
   }

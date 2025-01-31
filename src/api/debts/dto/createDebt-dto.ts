@@ -49,6 +49,9 @@ export class DebtDto {
   @IsOptional()
   total_debt_sum?: number;
 
+  @IsOptional()
+  total_month: number;
+
   @ApiProperty({
     description: 'A description of the debt',
     example: 'Debt for January 2025',

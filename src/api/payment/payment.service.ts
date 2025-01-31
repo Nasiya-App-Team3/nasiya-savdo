@@ -10,7 +10,7 @@ import { Debt, Payments } from 'src/core/entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DebtRepository, PaymentRepository } from 'src/core/repository';
 import { DebtsService } from '../debts/debts.service';
-import { addMonths, addDays, differenceInDays } from 'date-fns';
+import { addMonths } from 'date-fns';
 import { DebtStatus } from 'src/common/enum';
 
 @Injectable()
@@ -56,9 +56,12 @@ export class PaymentService extends BaseService<
         : new Date();
       currentDebtDate.setMonth(currentDebtDate.getMonth() + monthCount);
 
+      currentDebt.data.debt_period -= monthCount;
+
       await this.debtsService.update(forMonthPayment.debtId, {
         next_payment_date: currentDebtDate,
         debt_sum: currentDebt.data.debt_sum - forMonthPayment.sum,
+        debt_period: currentDebt.data.debt_period,
       });
       return newPayment;
     } catch (error) {
@@ -78,7 +81,7 @@ export class PaymentService extends BaseService<
       throw new NotFoundException('Debt Not Found');
     }
 
-    if (currentDebt.data.debt_status == 'closed') {
+    if (currentDebt.data.debt_status === 'closed') {
       throw new BadRequestException('Debt Is Closed');
     }
 
@@ -91,48 +94,29 @@ export class PaymentService extends BaseService<
     try {
       const newPayment = this.getRepository.create(dto);
 
+      const monthlyPayment =
+        currentDebt.data.debt_sum / currentDebt.data.debt_period;
+      const monthsPaid = Math.floor(newPayment.sum / monthlyPayment);
+
+      console.log(monthsPaid);
+
+      let nextPaymentDate = new Date(
+        currentDebt.data.next_payment_date as string,
+      );
+
       if (+currentDebt.data.debt_sum <= newPayment.sum) {
         currentDebt.data.debt_sum = 0;
         currentDebt.data.debt_status = DebtStatus.CLOSED;
       } else {
         currentDebt.data.debt_sum -= newPayment.sum;
 
-        const monthlyPayment =
-          currentDebt.data.total_debt_sum / currentDebt.data.debt_period;
-        let nextPaymentDate = new Date(
-          currentDebt.data.next_payment_date as string,
-        );
-
-        if (newPayment.sum >= monthlyPayment) {
-          const monthsPaid = Math.floor(newPayment.sum / monthlyPayment);
-          const remainingAmount = newPayment.sum % monthlyPayment;
-
+        if (monthsPaid > 0) {
           nextPaymentDate = addMonths(nextPaymentDate, monthsPaid);
-
-          if (remainingAmount > 0) {
-            const daysInMonth = differenceInDays(
-              addMonths(nextPaymentDate, 1),
-              nextPaymentDate,
-            );
-            const daysToAdd = Math.floor(
-              (remainingAmount / monthlyPayment) * daysInMonth,
-            );
-            nextPaymentDate = addDays(nextPaymentDate, daysToAdd);
-          }
-        } else {
-          const daysInMonth = differenceInDays(
-            addMonths(nextPaymentDate, 1),
-            nextPaymentDate,
-          );
-          const daysToAdd = Math.floor(
-            (newPayment.sum / monthlyPayment) * daysInMonth,
-          );
-          nextPaymentDate = addDays(nextPaymentDate, daysToAdd);
+          currentDebt.data.debt_period -= monthsPaid;
+          currentDebt.data.next_payment_date = nextPaymentDate
+            .toISOString()
+            .split('T')[0];
         }
-
-        currentDebt.data.next_payment_date = nextPaymentDate
-          .toISOString()
-          .split('T')[0];
       }
 
       await queryRunner.manager.save(newPayment);
@@ -151,7 +135,7 @@ export class PaymentService extends BaseService<
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      console.error(error);
+      console.error('Transaction Failed:', error);
       throw new BadRequestException('Transaction Failed');
     } finally {
       await queryRunner.release();

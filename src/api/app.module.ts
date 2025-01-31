@@ -16,6 +16,7 @@ import { ImagesOfDebtorsModule } from './images_of_debtors/images_of_debtors.mod
 import { UploadModule } from './upload/upload.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -51,6 +52,10 @@ import { APP_GUARD } from '@nestjs/core';
     UploadModule,
   ],
   providers: [
+    {
+      provide: AuthGuard,
+      useClass: AuthGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

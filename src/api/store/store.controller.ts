@@ -25,7 +25,6 @@ import { AdminGuard } from 'src/common/guard/admin.guard';
 
 @ApiBearerAuth()
 @ApiTags('Store API')
-@UseGuards(AdminGuard)
 @Controller('store')
 export class StoreController {
   constructor(private readonly storesService: StoreService) {}
@@ -79,6 +78,7 @@ export class StoreController {
     },
   })
   @Post()
+  @UseGuards(AdminGuard)
   create(@Body() cerateStoresDto: CreateStoresDto) {
     return this.storesService.create(cerateStoresDto);
   }
@@ -147,6 +147,27 @@ export class StoreController {
     return this.storesService.findStoreByDateOne(id, date);
   }
 
+  // @Get('total-debt')
+  // async getTotalDebt(@UserID() storeId: string) {
+  //   const result = this.storesService.getTotalSumOfStore(storeId);
+  //   return result;
+  // }
+
+  // @Get('debtors-count')
+  // async getDebtorsCount(@UserID() storeId: string) {
+  //   return this.storesService.getDebtorsCountByStore(storeId);
+  // }
+
+  // @Get('late-debts')
+  // async getLateDebts(@UserID() storeId: string) {
+  //   return this.storesService.getLateDebtsCountByStore(storeId);
+  // }
+
+  @Get('statistics')
+  statistics(@UserID() id: string) {
+    return this.storesService.storeStatistics(id);
+  }
+
   @ApiOperation({
     summary: 'Get One Store',
   })
@@ -183,6 +204,7 @@ export class StoreController {
     },
   })
   @Get(':id')
+  @UseGuards(AdminGuard)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.storesService.findOne(id);
   }
@@ -266,6 +288,7 @@ export class StoreController {
     },
   })
   @Delete(':id')
+  @UseGuards(AdminGuard)
   delete(@Param('id', ParseUUIDPipe) id: string) {
     return this.storesService.remove(id);
   }
