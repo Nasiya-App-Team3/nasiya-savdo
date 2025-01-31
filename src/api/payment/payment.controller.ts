@@ -19,7 +19,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { query } from 'express';
 
 @ApiBearerAuth()
 @ApiTags('Payment Api')
@@ -221,15 +220,16 @@ export class PaymentController {
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.paymentService.delete(id);
   }
-  // @Post('for/month')
-  // async forMonth(
-  //   @Body() forMonthPayment: CreatePaymentDto,
-  //   @Query() query: any, // month count come from query. its name is monthCount
-  // ) {
-  //   return this.paymentService.forMonth(forMonthPayment);
-  // }
 
-  @Post('for_any_sum')
+  @Post('for-month')
+  async forMonth(
+    @Body() forMonthPayment: CreatePaymentDto,
+    @Query() query: any, // month count come from query. its name is monthCount
+  ) {
+    return this.paymentService.forMonth(forMonthPayment, query);
+  }
+
+  @Post('for-any-sum')
   async forAnySum(@Body() forAnySumPayment: CreatePaymentDto) {
     return this.paymentService.forAnySum(forAnySumPayment);
   }
