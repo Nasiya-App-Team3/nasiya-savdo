@@ -98,8 +98,6 @@ export class PaymentService extends BaseService<
         currentDebt.data.debt_sum / currentDebt.data.debt_period;
       const monthsPaid = Math.floor(newPayment.sum / monthlyPayment);
 
-      console.log(monthsPaid);
-
       let nextPaymentDate = new Date(
         currentDebt.data.next_payment_date as string,
       );

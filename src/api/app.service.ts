@@ -17,7 +17,6 @@ export class Application {
         forbidNonWhitelisted: true,
       }),
     );
-
     const config = new DocumentBuilder()
       .setTitle('Nasiya App')
       .setDescription('App description here')
