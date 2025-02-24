@@ -1,15 +1,39 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsEnum,
+  IsEmail,
   IsNotEmpty,
   IsNumber,
-  IsOptional,
   IsString,
   Min,
   MinLength,
 } from 'class-validator';
+import { IsPhoneNumber } from '../../../common/decorator/is-phone-number';
 
 export class CreateStoresDto {
+  @ApiProperty({
+    example: 'john doe',
+    description: 'full name for the owner of the store',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  full_name: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'Phone number of store',
+    example: '+998901234567',
+  })
+  @IsPhoneNumber()
+  phone_number: string;
+
+  @ApiProperty({
+    example: 'exampl@exampl.com',
+    description: 'email for the owner of the store',
+  })
+  @IsEmail()
+  email: string;
+
   @ApiProperty({
     example: 'johndoe',
     description: 'login for the owner of the store',
@@ -32,25 +56,5 @@ export class CreateStoresDto {
   @IsNumber()
   @IsNotEmpty()
   @Min(0)
-  @MinLength(4)
   pin_code: number;
-
-  @ApiProperty({
-    example: 1000.0,
-    description: 'Initial balance of the store',
-    default: 1000.0,
-  })
-  @IsNumber()
-  @IsNotEmpty()
-  @Min(1000)
-  wallet: number;
-
-  @ApiProperty({
-    example: 'Image',
-    description: 'Image for the store',
-    nullable: true,
-  })
-  @IsOptional()
-  @IsString()
-  image?: string;
 }

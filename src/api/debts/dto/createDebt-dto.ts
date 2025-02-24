@@ -6,17 +6,22 @@ import {
   IsOptional,
   IsString,
   IsDateString,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
 } from 'class-validator';
-import { DebtPeriod } from 'src/common/enum';
+import { DebtPeriod } from 'src/common/enum'; // Enum joyi
+import { DebtStatus } from 'src/common/enum'; // DebtStatus enumi
 
 export class DebtDto {
   @ApiProperty({
-    description: 'The date when the debt was created',
-    example: '2025-01-22',
+    description: 'The next payment date',
+    example: '2025-02-22',
+    required: false,
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsDateString()
-  debt_date: string;
+  next_payment_date?: Date;
 
   @ApiProperty({
     description: 'The payment period for the debt',
@@ -37,6 +42,17 @@ export class DebtDto {
   debt_sum: number;
 
   @ApiProperty({
+    description: 'The total debt amount',
+    example: 10000,
+    required: false,
+  })
+  @IsOptional()
+  total_debt_sum?: number;
+
+  @IsOptional()
+  total_month: number;
+
+  @ApiProperty({
     description: 'A description of the debt',
     example: 'Debt for January 2025',
     required: false,
@@ -45,10 +61,28 @@ export class DebtDto {
   @IsString()
   description?: string;
 
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(2)
+  @ApiProperty({
+    description: 'Images of the debt',
+    example: [{ image: 'image-url-1' }, { image: 'image-url-2' }],
+  })
+  images: { image: string }[];
+
   @ApiProperty({
     description: 'The ID of the debtor',
     example: 'debtor-12345',
   })
   @IsNotEmpty()
-  debtorId: string;
+  debtor: string;
+
+  @ApiProperty({
+    description: 'The status of the debt',
+    example: 'active',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(DebtStatus)
+  debt_status?: DebtStatus;
 }

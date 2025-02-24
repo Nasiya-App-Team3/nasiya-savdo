@@ -2,19 +2,21 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
+import { AllExceptionsFilter } from '../infrastructure/lib/index';
 
 export class Application {
   static async main(): Promise<void> {
     const app = await NestFactory.create(AppModule);
     app.setGlobalPrefix('api');
-
+    app.use(cookieParser());
+    app.useGlobalFilters(new AllExceptionsFilter());
     app.useGlobalPipes(
       new ValidationPipe({
         whitelist: true,
         forbidNonWhitelisted: true,
       }),
     );
-
     const config = new DocumentBuilder()
       .setTitle('Nasiya App')
       .setDescription('App description here')
@@ -33,7 +35,7 @@ export class Application {
       )
       .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('docs', app, documentFactory);
+    SwaggerModule.setup('api/docs', app, documentFactory);
 
     await app.listen(process.env.PORT ?? 3000);
   }

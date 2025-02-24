@@ -1,62 +1,216 @@
 import {
+  Body,
   Controller,
+  Delete,
   Get,
+  Param,
+  ParseUUIDPipe,
   Post,
   Put,
-  Delete,
-  Param,
-  Body,
-  ParseUUIDPipe,
+  HttpException,
+  Res,
+  HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateAdminDto, UpdateAdminDto } from './dto/index.js';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger';
+import { CreateAdminDto, UpdateAdminDto } from './dto';
+import { LoginAdminDto } from './dto/login-admin.dto';
+import { Response } from 'express';
+import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
+import { TokenResponse } from 'src/common/interfaces';
+import { Public } from 'src/common/decorator/public.decorator';
+import { SuperAdminGuard } from 'src/common/guard/super-admin.guard';
+import { AdminGuard } from 'src/common/guard/admin.guard';
 
 @ApiTags('Admins')
 @Controller('admins')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @ApiOperation({ summary: 'Create"s a new admin' })
-  @ApiResponse({ status: 201, description: 'The admin created successfuly!' })
-  @ApiResponse({ status: 400, description: 'Validation failed' })
-  @Post()
-  create(@Body() adminData: CreateAdminDto) {
-    return this.adminService.create(adminData);
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Login or password not found!',
+  })
+  @ApiResponse({
+    status: HttpStatus.FORBIDDEN,
+    description: 'You are inactive. Call the store',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Successful login',
+    type: TokenResponse,
+  })
+  @Public()
+  @Post('signin')
+  async login(
+    @Body() loginAdminDto: LoginAdminDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.adminService.login(loginAdminDto, res);
   }
 
-  @ApiOperation({ summary: 'Get"s all admins' })
-  @ApiBody({ type: CreateAdminDto })
-  @ApiResponse({ status: 200, description: 'List of all admins:' })
+  @Post()
+  @ApiOperation({ summary: 'Create a new admin' })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation failed.',
+  })
+  @ApiCreatedResponse({
+    description: 'The admin has been successfully created.',
+    type: CreateAdminDto,
+  })
+  @ApiBearerAuth()
+  @UseGuards(SuperAdminGuard)
+  async create(@Body() adminData: CreateAdminDto): Promise<any> {
+    try {
+      return this.adminService.create(adminData);
+    } catch (error) {
+      throw new HttpException(
+        error.message || 'Failed to create admin.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
   @Get()
-  findAll() {
+  @ApiOperation({ summary: 'Get all admins' })
+  @ApiOkResponse({
+    description: 'List of all admins.',
+    type: [CreateAdminDto],
+  })
+  async findAll(): Promise<any> {
     return this.adminService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get"s admin by id' })
-  @ApiResponse({ status: 200, description: 'The admin"s data:' })
-  @ApiResponse({ status: 404, description: 'Admin is not found' })
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.adminService.findOneById(id);
+  @ApiOperation({ summary: 'Get an admin by ID' })
+  @ApiOkResponse({
+    description: 'Return the admin data.',
+    type: CreateAdminDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found.',
+  })
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
+    const data = await this.adminService.findOneById(id);
+    if (!data) {
+      throw new HttpException('Admin not found.', HttpStatus.NOT_FOUND);
+    }
+    return data;
   }
 
-  @ApiOperation({ summary: 'Update admin"s data' })
-  @ApiResponse({ status: 200, description: 'The admin successfully updated!' })
-  @ApiResponse({ status: 404, description: 'Admin is not found' })
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
   @Put(':id')
-  update(
+  @ApiOperation({ summary: 'Update admin data' })
+  @ApiOkResponse({
+    description: 'The admin has been successfully updated.',
+    type: UpdateAdminDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input data.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found.',
+  })
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateAdminDto: UpdateAdminDto
-  ) {
-    return this.adminService.update(id, updateAdminDto);
+    @Body() updateData: UpdateAdminDto,
+  ): Promise<any> {
+    return this.adminService.update(id, updateData);
   }
 
-  @ApiOperation({ summary: 'Delete"s an admin' })
-  @ApiResponse({ status: 200, description: 'The admin successfully deleted!' })
-  @ApiResponse({ status: 404, description: 'Admin is not found' })
+  @ApiBearerAuth()
+  @UseGuards(AdminGuard)
   @Delete(':id')
-  delete(@Param('id', ParseUUIDPipe) id: string) {
-    return this.adminService.delete(id);
+  @ApiOperation({ summary: 'Delete an admin' })
+  @ApiOkResponse({
+    description: 'The admin has been successfully deleted.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Admin not found.',
+  })
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<any> {
+    await this.adminService.delete(id);
+    return { message: 'Admin successfully deleted.' };
+  }
+
+  @ApiOperation({ summary: 'New access token for admin' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Get new access token success',
+    schema: {
+      example: {
+        status_code: 200,
+        message: 'success',
+        data: {
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJpZCI6IjRkMGJ',
+          expire: '24h',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Fail new access token',
+    schema: {
+      example: {
+        status_code: 400,
+        message: 'Error on refresh token',
+      },
+    },
+  })
+  @Public()
+  @Post('refresh-token')
+  refreshToken(@CookieGetter('refresh_token_store') refresh_token: string) {
+    return this.adminService.refreshToken(refresh_token);
+  }
+
+  @ApiOperation({ summary: 'Logout admin' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Admin logged out success',
+    schema: {
+      example: {
+        status_code: 200,
+        message: 'success',
+        data: {},
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Fail on logging out admin',
+    schema: {
+      example: {
+        status_code: 400,
+        message: 'Error on logout',
+      },
+    },
+  })
+  // @UseGuards(AuthGuard)
+  @Post('logout')
+  @ApiBearerAuth()
+  logout(
+    @CookieGetter('refresh_token_store') refresh_token: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.adminService.logout(refresh_token, res);
   }
 }
