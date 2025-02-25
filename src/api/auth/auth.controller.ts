@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthService } from './auth.service';
 import {
@@ -12,6 +12,7 @@ import { CookieGetter } from 'src/common/decorator/cookie-getter.decorator';
 import { TokenResponse } from 'src/common/interfaces';
 import { UserID } from 'src/common/decorator/user-id.decorator';
 import { Public } from 'src/common/decorator/public.decorator';
+import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -20,7 +21,6 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  @ApiOperation({ summary: 'Admin login' })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Login or password not found!',
@@ -49,7 +49,7 @@ export class AuthController {
     description: 'Admin profile fetched successfully',
   })
   @ApiBearerAuth()
-  // @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   profile(@UserID() id: string) {
     return this.authService.findOne(id);
   }
