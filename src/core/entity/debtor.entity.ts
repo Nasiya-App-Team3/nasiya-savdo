@@ -12,7 +12,7 @@ export class Debtor extends BaseModel {
   @Column()
   full_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
   @Column()

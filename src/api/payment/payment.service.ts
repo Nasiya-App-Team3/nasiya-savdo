@@ -104,6 +104,7 @@ export class PaymentService extends BaseService<
 
       if (+currentDebt.data.debt_sum <= newPayment.sum) {
         currentDebt.data.debt_sum = 0;
+        currentDebt.data.debt_period = 0;
         currentDebt.data.debt_status = DebtStatus.CLOSED;
       } else {
         currentDebt.data.debt_sum -= newPayment.sum;
