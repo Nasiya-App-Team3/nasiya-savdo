@@ -135,6 +135,18 @@ export class StoreService {
     };
   }
 
+  async getPaymentDays(id: string) {
+    const days = await this.repository
+      .createQueryBuilder('store')
+      .leftJoinAndSelect('store.debts', 'debt') // store va debts jadvalini birlashtiramiz
+      .where('store.id = :id', { id }) // store.id boʻyicha filtrlash
+      .andWhere('debt.debt_status = :status', { status: 'active' }) // faqat active holatdagi qarzlarni olish
+      .select('debt.next_payment_date', 'next_payment_date') // next_payment_date ni tanlash
+      .getRawMany(); // natijani olish
+
+    console.log(days);
+  }
+
   async findAll(): Promise<{
     status_code: number;
     message: string;
