@@ -137,12 +137,13 @@ export class StoreService {
 
   async getPaymentDays(id: string) {
     const days = await this.repository
-      .createQueryBuilder('store')
-      .leftJoinAndSelect('store.debtors', 'debtor')
-      .leftJoinAndSelect('debtor.debts', 'debt')
-      .select('debt.total_debt_sum, total_month, debtor.full_name')
-      .where('store.id = :id', { id })
-      .getRawMany()
+    .createQueryBuilder('store')
+    .leftJoinAndSelect('store.debtors', 'debtor')
+    .leftJoinAndSelect('debtor.debts', 'debt')
+    .select('debt.next_payment_date')
+    .where('store.id = :id', { id })
+    .andWhere('debt.debt_status = :status', { status: 'active' })
+    .getRawMany();
 
     console.log(days);
   }
