@@ -142,6 +142,7 @@ export class StoreService {
       .leftJoinAndSelect('debtor.debts', 'debt')
       .select('debt.total_debt_sum, total_month, debtor.full_name')
       .where('store.id = :id', { id })
+      .getRawMany()
 
     console.log(days);
   }
