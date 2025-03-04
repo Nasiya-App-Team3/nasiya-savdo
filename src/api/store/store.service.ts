@@ -145,7 +145,14 @@ export class StoreService {
     .andWhere('debt.debt_status = :status', { status: 'active' })
     .getRawMany();
 
-    console.log(days);
+    const dates = days.map((i) => {
+      return i.debt_next_payment_date.toISOString().split('T')[0]
+    });
+    return {
+      status_code: 200,
+      message: 'success',
+      dates
+    }
   }
 
   async findAll(): Promise<{

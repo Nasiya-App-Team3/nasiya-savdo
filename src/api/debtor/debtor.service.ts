@@ -33,14 +33,20 @@ export class DebtorService extends BaseService<
     message: string;
     data: DeepPartial<Debtor>;
   }> {
+    console.log(dto)
     const newDebtor = this.getRepository.create(dto);
     await this.getRepository.save(newDebtor);
+
+    console.log(newDebtor)
 
     const phoneTransaction =
       this.phoneRepo.manager.connection.createQueryRunner();
 
     await phoneTransaction.connect();
     await phoneTransaction.startTransaction();
+
+
+    console.log(newDebtor);
     try {
       for (const phone_number of dto.phone_numbers) {
         const newPhone = this.phoneRepo.create({
@@ -48,6 +54,7 @@ export class DebtorService extends BaseService<
           phone_number: phone_number,
         });
         await phoneTransaction.manager.save(newPhone);
+        console.log(newPhone)
       }
 
       await phoneTransaction.commitTransaction();
@@ -108,6 +115,8 @@ export class DebtorService extends BaseService<
     data: DeepPartial<Debtor>[];
   }> {
     const allDebtors = await this.getRepository.find(options);
+
+
 
     return {
       status_code: 200,

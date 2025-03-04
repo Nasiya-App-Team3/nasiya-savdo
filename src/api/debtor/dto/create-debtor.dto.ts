@@ -34,7 +34,7 @@ export class CreateDebtorDto {
   @ApiPropertyOptional({ description: 'Store ID associated with the debtor' })
   @IsString()
   @IsOptional()
-  store: string;
+  store: any;
 
   @ApiProperty({
     example: ['+998901234567', '+998911234567'],

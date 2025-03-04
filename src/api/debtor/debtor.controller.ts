@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateDebtorDto } from './dto/create-debtor.dto';
 import { DebtorService } from './debtor.service';
@@ -24,10 +25,11 @@ import {
 } from '@nestjs/swagger';
 import { ESearchBy } from 'src/common/enum';
 import { ILike } from 'typeorm';
+import { AuthGuard } from 'src/common/guard/jwt-auth.guard';
 
 @ApiTags('Debtor')
 @ApiBearerAuth()
-// @UseGuards(AuthGuard)
+@UseGuards(AuthGuard)
 @Controller('debtor')
 export class DebtorController {
   constructor(private readonly debtorService: DebtorService) {}
@@ -43,6 +45,7 @@ export class DebtorController {
     type: CreateDebtorDto,
   })
   create(@Body() createDebtorDto: CreateDebtorDto, @UserID() id: string) {
+    console.log(id);
     return this.debtorService.create({ ...createDebtorDto, store: id });
   }
 
@@ -125,7 +128,7 @@ export class DebtorController {
     type: Number,
     description: 'Number of records to skip (pagination)',
   })
-  searchDebtor(@UserID() id: string, @Query() query: any) {
+  async searchDebtor(@UserID() id: string, @Query() query: any) {
     try {
       if (query.search_by === ESearchBy.FULL_NAME) {
         return this.debtorService.findAll({
@@ -141,7 +144,7 @@ export class DebtorController {
       }
 
       if (query.search_by === ESearchBy.PHONE_NUMBER) {
-        return this.debtorService.getRepository
+        const debtors = await this.debtorService.getRepository
           .createQueryBuilder('debtor')
           .leftJoinAndSelect('debtor.phone_numbers', 'phone_numbers_of_debtor') // phone_numbers bilan bog'lash
           .where('debtor.store = :store', { store: id }) // store sharti
@@ -152,6 +155,11 @@ export class DebtorController {
           .skip(query.skip) // pagination uchun skip
           .take(query.take) // pagination uchun phone_number
           .getMany();
+          return {
+            status_code: 200,
+            message: 'success',
+            data: debtors,
+          }
       }
     } catch (error) {
       throw Error(error.message);

@@ -174,8 +174,7 @@ export class StoreController {
 
   @Get('payment-days')
   async paymentDays(@UserID() id: string) {
-    await this.storesService.getPaymentDays(id)
-    return 'ok';
+    return this.storesService.getPaymentDays(id)
   }
 
   @ApiOperation({
