@@ -172,6 +172,12 @@ export class StoreController {
     return this.storesService.storeStatistics(id);
   }
 
+  @Get('payment-days')
+  async paymentDays(@UserID() id: string) {
+    console.log(id);
+    return 'ok';
+  }
+
   @ApiOperation({
     summary: 'Get One Store',
   })
